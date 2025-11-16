@@ -9,7 +9,7 @@ export default function App() {
     
     <GluestackUIProvider mode="dark">
       <View style={styles.container}>
-      <Text>wongirengjembuten</Text>
+      <Text>Text</Text>
       <StatusBar style="auto" />
     </View>
     </GluestackUIProvider>
