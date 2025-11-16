@@ -2,17 +2,9 @@ import React from 'react';
 import { ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
+import { CATEGORIES } from '../../datas';
 
-
-export const DEFAULT_CATEGORIES = [
-	{ id: 'breakfast', label: 'Breakfast', icon: require('../assets/breakfast.png') },
-	{ id: 'lunch', label: 'Lunch', icon: require('../assets/lunch.png') },
-	{ id: 'dinner', label: 'Dinner', icon: require('../assets/dinner.png') },
-	{ id: 'dessert', label: 'Dessert', icon: require('../assets/dessert.png') },
-	{ id: 'snack', label: 'Snack', icon: require('../assets/snack.png')},
-];
-
-export default function Categories({ categories = DEFAULT_CATEGORIES, selected, onSelect }) {
+export default function Categories({ categories = CATEGORIES, selected, onSelect }) {
 	const router = useRouter();
 	return (
 		<Box mb="$4">

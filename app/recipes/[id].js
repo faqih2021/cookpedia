@@ -1,13 +1,12 @@
 import React from 'react';
 import { Image } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { DEFAULT_RECOMMENDATIONS } from '../../components/recommendation';
+import { useLocalSearchParams } from 'expo-router';
+import { RECOMMENDATIONS } from '../../datas';
 
 export default function RecipeDetail() {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
-  const recipe = DEFAULT_RECOMMENDATIONS.find((r) => r.id === id);
+  const recipe = RECOMMENDATIONS.find((r) => r.id === id);
 
   if (!recipe) {
     return (
@@ -28,7 +27,20 @@ export default function RecipeDetail() {
       <Text fontWeight="$bold">{recipe.title}</Text>
       <Text color="$coolGray400" mb="$3">{recipe.by}</Text>
 
-      <Text>Apanih Resepnya</Text>
+      <Box mb="$4">
+        <Text fontWeight="$bold" mb="$2">Ingredients</Text>
+        {recipe.ingredients && recipe.ingredients.map((ing, idx) => (
+          <Text key={idx} mb="$1">- {ing}</Text>
+        ))}
+      </Box>
+
+      <Box>
+        <Text fontWeight="$bold" mb="$2">Steps</Text>
+        {recipe.steps && recipe.steps.map((s, idx) => (
+          <Text key={idx} mb="$1">{idx + 1}. {s}</Text>
+        ))}
+      </Box>
     </Box>
   );
 }
+

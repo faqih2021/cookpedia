@@ -2,14 +2,9 @@ import React from 'react';
 import { ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
+import { RECOMMENDATIONS } from '../../datas';
 
-export const DEFAULT_RECOMMENDATIONS = [
-	{ id: '1', title: 'Ayam Goreng', by: 'By Paki', image: require('../assets/ayam-goreng.jpeg') },
-	{ id: '2', title: 'Belalang Goreng', by: 'By Dwik', image: require('../assets/belalang.jpeg') },
-	{ id: '3', title: 'Tempe Allright', by: 'By Tang', image: require('../assets/tempe.jpeg') },
-];
-
-export default function Recommendation({ items = DEFAULT_RECOMMENDATIONS }) {
+export default function Recommendation({ items = RECOMMENDATIONS }) {
 	const router = useRouter();
 
 	return (
@@ -42,3 +37,4 @@ export default function Recommendation({ items = DEFAULT_RECOMMENDATIONS }) {
 		</Box>
 	);
 }
+

@@ -1,3 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Custom scrollbar styles for web (modern browsers) */
+:root {
+	--scrollbar-bg: transparent;
+	--scrollbar-thumb: rgba(0,0,0,0.18);
+	--scrollbar-thumb-hover: rgba(0,0,0,0.28);
+	--scrollbar-size: 10px;
+}
+
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+	width: var(--scrollbar-size);
+	height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+	background: var(--scrollbar-bg);
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--scrollbar-thumb);
+	border-radius: 999px;
+	border: 2px solid transparent;
+	background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--scrollbar-thumb-hover);
+}
+
+/* Utility class to hide scrollbar while keeping scroll functionality */
+.hide-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+	display: none; /* Safari and Chrome */
+}
