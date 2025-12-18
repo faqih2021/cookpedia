@@ -5,7 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import RecipeCard from "../components/recipeResultCard";
-import { recipes } from "@/datas";
 
 const DEFAULT_RECIPES = [
   { id: '1', title: 'Ayam Goreng', by: 'By Paki', image: require('../assets/ayam-goreng.jpeg') },
