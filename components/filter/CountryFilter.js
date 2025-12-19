@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   ScrollView, 
   VStack, 
@@ -7,13 +7,61 @@ import {
   Box,
   Pressable
 } from '@gluestack-ui/themed';
-import { Image } from 'react-native';
-import CountryCard from './CountryCard';
-import { featuredCountries, allCountries, popularIngredients } from '../../data/filterData';
+import { Image, ActivityIndicator } from 'react-native';
 
 export default function CountryFilter({
   onCountrySelect
 }) {
+  const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        // Fetch areas dari TheMealDB
+        const res = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list');
+        const json = await res.json();
+        const areas = json?.meals || [];
+
+        // Fetch semua negara dari restcountries
+        const countriesRes = await fetch('https://restcountries.com/v3.1/all?fields=name,demonyms,cca2,flags');
+        const countriesData = await countriesRes.json();
+
+        // Mapping area ke data negara
+        const mappedCountries = areas.map((item, idx) => {
+          const areaName = item.strArea;
+          
+          // Cari negara berdasarkan demonym (nama warga negara)
+          const country = countriesData.find(c => {
+            const demonymEng = c.demonyms?.eng?.m || c.demonyms?.eng?.f || '';
+            return demonymEng.toLowerCase() === areaName.toLowerCase();
+          });
+
+          return {
+            id: idx + 1,
+            name: areaName,
+            flag: { uri: country?.flags?.png || 'https://flagcdn.com/w80/un.png' }
+          };
+        });
+
+        setCountries(mappedCountries);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCountries();
+  }, []);
+
+  if (loading) {
+    return (
+      <VStack flex={1} bg="#00A86B" justifyContent="center" alignItems="center">
+        <ActivityIndicator size="large" color="white" />
+      </VStack>
+    );
+  }
+
   return (
     <VStack flex={1} bg="#00A86B">
       {/* Header */}
@@ -25,53 +73,53 @@ export default function CountryFilter({
           Discover recipes from around the world
         </Text>
       </VStack>
-      {/* Popular Country */}
-      <VStack p="$6" pt="$4">
-        <Text 
-          fontSize="$lg" 
-          fontWeight="$bold" 
-          color="$coolGray800" 
-          bg="white" 
-          px="$4" 
-          py="$2" 
-          borderRadius="$3xl"
-          alignSelf="flex-start"
-          mb="$3"
-        >
-          Popular Country
-        </Text>
+      {countries.length > 0 && (
+        <VStack p="$6" pt="$4">
+          <Text 
+            fontSize="$lg" 
+            fontWeight="$bold" 
+            color="$coolGray800" 
+            bg="white" 
+            px="$4" 
+            py="$2" 
+            borderRadius="$3xl"
+            alignSelf="flex-start"
+            mb="$3"
+          >
+            Popular Country
+          </Text>
 
-        <Pressable
-          bg="$white"
-          borderRadius="$2xl"
-          p="$4"
-          onPress={() => onCountrySelect(allCountries[5].name)}
-          shadowColor="#000000"
-          shadowOffset={{ width: 0, height: 4 }}
-          shadowOpacity={0.15}
-          shadowRadius={8}
-          elevation={5}
-        >
-          <HStack alignItems="center" space="md">
-            <Image 
-              source={allCountries[5].flag}
-              style={{ 
-                width: 80, 
-                height: 60, 
-                borderRadius: 8, 
-                borderWidth: 2, 
-                borderColor: '#E5E7EB' 
-              }}
-              resizeMode="cover"
-            />
-            <Text fontSize="$2xl" fontWeight="$bold" color="$coolGray800">
-              {allCountries[5].name}
-            </Text>
-          </HStack>
-        </Pressable>
-      </VStack>
+          <Pressable
+            bg="$white"
+            borderRadius="$2xl"
+            p="$4"
+            onPress={() => onCountrySelect(countries[0]?.id, countries[0]?.name)}
+            shadowColor="#000000"
+            shadowOffset={{ width: 0, height: 4 }}
+            shadowOpacity={0.15}
+            shadowRadius={8}
+            elevation={5}
+          >
+            <HStack alignItems="center" space="md">
+              <Image 
+                source={countries[0]?.flag}
+                style={{ 
+                  width: 80, 
+                  height: 60, 
+                  borderRadius: 8, 
+                  borderWidth: 2, 
+                  borderColor: '#E5E7EB' 
+                }}
+                resizeMode="cover"
+              />
+              <Text fontSize="$2xl" fontWeight="$bold" color="$coolGray800">
+                {countries[0]?.name}
+              </Text>
+            </HStack>
+          </Pressable>
+        </VStack>
+      )}
       
-      {/* White Container*/}
       <VStack
         flex={1}
         bg="white" 
@@ -79,23 +127,21 @@ export default function CountryFilter({
         borderTopRightRadius={50}
         mt="$0"
       >
-        {/* Header - All Countries */}
         <VStack pt="$8" px="$6" pb="$3" bg="white" borderTopLeftRadius={50} borderTopRightRadius={50}>
           <Text fontSize="$md" fontWeight="$bold" color="$coolGray800">
-            All Countries
+            All Countries ({countries.length})
           </Text>
         </VStack>
 
-        {/* Konten all country */}
         <ScrollView
           flex={1}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
         >
           <VStack px="$6" space="md">
-            {Array.from({ length: Math.ceil(allCountries.length / 3) }, (_, rowIndex) => (
+            {Array.from({ length: Math.ceil(countries.length / 3) }, (_, rowIndex) => (
               <HStack key={rowIndex} space="md" justifyContent="space-between">
-                {allCountries.slice(rowIndex * 3, (rowIndex + 1) * 3).map((country) => (
+                {countries.slice(rowIndex * 3, (rowIndex + 1) * 3).map((country) => (
                   <Pressable
                     key={country.id}
                     flex={1}
@@ -105,7 +151,7 @@ export default function CountryFilter({
                     alignItems="center"
                     py="$4"
                     px="$3"
-                    onPress={() => onCountrySelect(country.name)}
+                    onPress={() => onCountrySelect(country.id, country.name)}
                     shadowColor="#000000"
                     shadowOffset={{ width: 0, height: 4 }}
                     shadowOpacity={0.15}
@@ -128,8 +174,8 @@ export default function CountryFilter({
                     </Text>
                   </Pressable>
                 ))}
-                {allCountries.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 &&
-                  Array.from({ length: 3 - allCountries.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, emptyIndex) => (
+                {countries.slice(rowIndex * 3, (rowIndex + 1) * 3).length < 3 &&
+                  Array.from({ length: 3 - countries.slice(rowIndex * 3, (rowIndex + 1) * 3).length }).map((_, emptyIndex) => (
                     <Box key={`empty-${emptyIndex}`} flex={1} />
                   ))
                 }

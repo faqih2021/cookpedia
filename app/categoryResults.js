@@ -1,37 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Box, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import CategoryCard from "../components/categoryResultCard";
 
-const DEFAULT_CATEGORIES = [
-  { id: 'breakfast', label: 'Breakfast', icon: require('../assets/breakfast.png') },
-  { id: 'lunch', label: 'Lunch', icon: require('../assets/lunch.png') },
-  { id: 'dinner', label: 'Dinner', icon: require('../assets/dinner.png') },
-  { id: 'dessert', label: 'Dessert', icon: require('../assets/dessert.png') },
-  { id: 'snack', label: 'Snack', icon: require('../assets/snack.png')}
-];
-
 export default function CategoryResultsScreen() {
   const router = useRouter();
   const { query } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (query) {
       const searchTerm = query.trim();
-      const results = DEFAULT_CATEGORIES.filter(category => {
-        return category.label.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      
-      setSearchResults(results);
+      const firstLetter = searchTerm.charAt(0).toLowerCase();
+
+      const fetchCategories = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+          const json = await res.json();
+          const categories = json?.categories || [];
+
+          const filtered = categories.filter(c =>
+            c.strCategory.toLowerCase().startsWith(firstLetter)
+          );
+
+          const results = filtered.map(c => ({
+            id: c.idCategory,
+            label: c.strCategory,
+            icon: { uri: c.strCategoryThumb },
+            description: c.strCategoryDescription
+          }));
+
+          setSearchResults(results);
+        } catch (e) {
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCategories();
     }
   }, [query]);
 
   const handleCategoryPress = (category) => {
-    console.log("Navigate to category:", category.id);
+    router.push(`/categories/${category.label.toLowerCase()}`);
   };
 
   return (
@@ -70,7 +87,12 @@ export default function CategoryResultsScreen() {
             </Text>
           </Box>
 
-          {searchResults.length > 0 ? (
+          {loading ? (
+            <Box justifyContent="center" alignItems="center" mt="$8">
+              <ActivityIndicator size="large" color="#00A86B" />
+              <Text mt="$3" color="$coolGray600">Searching...</Text>
+            </Box>
+          ) : searchResults.length > 0 ? (
             searchResults.map((category) => (
               <CategoryCard 
                 key={category.id} 

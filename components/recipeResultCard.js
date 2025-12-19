@@ -1,12 +1,23 @@
 import React from "react";
 import { TouchableOpacity, Image } from "react-native";
 import { Box, Text } from "@gluestack-ui/themed";
+import { useRouter } from "expo-router";
 
 export default function RecipeCard({ recipe, onPress }) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    if (onPress) {
+      onPress(recipe);
+    } else {
+      router.push(`/recipes/${recipe.id}`);
+    }
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      onPress={() => onPress?.(recipe)}
+      onPress={handlePress}
     >
       <Box
         bg="white"

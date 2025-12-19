@@ -1,11 +1,42 @@
-import React from 'react';
-import { ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
-import { CATEGORIES } from '../../datas';
 
-export default function Categories({ categories = CATEGORIES, selected, onSelect }) {
+export default function Categories({ selected, onSelect }) {
 	const router = useRouter();
+	const [categories, setCategories] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const res = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+				const json = await res.json();
+				const cats = json?.categories || [];
+				const mapped = cats.slice(0, 6).map(c => ({
+					id: c.strCategory.toLowerCase(),
+					label: c.strCategory,
+					icon: { uri: c.strCategoryThumb }
+				}));
+				setCategories(mapped);
+			} catch (e) {
+				setCategories([]);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchCategories();
+	}, []);
+
+	if (loading) {
+		return (
+			<Box mb="$4" justifyContent="center" alignItems="center" height={120}>
+				<ActivityIndicator size="small" color="#00A86B" />
+			</Box>
+		);
+	}
+
 	return (
 		<Box mb="$4">
 			<Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$2">

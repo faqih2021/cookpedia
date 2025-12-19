@@ -1,33 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Box, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import RecipeCard from "../components/recipeResultCard";
 
-const DEFAULT_RECIPES = [
-  { id: '1', title: 'Ayam Goreng', by: 'By Paki', image: require('../assets/ayam-goreng.jpeg') },
-  { id: '2', title: 'Belalang Goreng', by: 'By Dwik', image: require('../assets/belalang.jpeg') },
-  { id: '3', title: 'Tempe Allright', by: 'By Tang', image: require('../assets/tempe.jpeg') },
-  { id: '4', title: 'Sop Buah', by: 'By Syeghandy', image: require('../assets/sopbuah.jpg') },
-  { id: '5', title: 'Tahu Tek', by: 'By Mangdalla', image: require('../assets/tahutek.jpg') }
-];
-
 export default function RecipeResultsScreen() {
   const router = useRouter();
   const { query } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (query) {
       const searchTerm = query.trim();
+      const firstLetter = searchTerm.charAt(0).toLowerCase();
       
-      const results = DEFAULT_RECIPES.filter(recipe => {
-        return recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      
-      setSearchResults(results);
+      const fetchRecipes = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${firstLetter}`);
+          const json = await res.json();
+          const meals = json?.meals || [];
+          
+          const filtered = meals.filter(m => 
+            m.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          
+          const results = filtered.map(m => ({
+            id: m.idMeal,
+            title: m.strMeal,
+            by: m.strCategory || 'Unknown',
+            image: { uri: m.strMealThumb }
+          }));
+          
+          setSearchResults(results);
+        } catch (e) {
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchRecipes();
     }
   }, [query]);
 
@@ -71,7 +87,12 @@ export default function RecipeResultsScreen() {
             </Text>
           </Box>
 
-          {searchResults.length > 0 ? (
+          {loading ? (
+            <Box justifyContent="center" alignItems="center" mt="$8">
+              <ActivityIndicator size="large" color="#00A86B" />
+              <Text mt="$3" color="$coolGray600">Searching...</Text>
+            </Box>
+          ) : searchResults.length > 0 ? (
             searchResults.map((recipe) => (
               <RecipeCard 
                 key={recipe.id} 

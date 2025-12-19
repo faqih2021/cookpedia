@@ -33,28 +33,28 @@ export default function FilterScreen() {
   } = useFilterState();
 
   // handle select
-  const handleIngredientSelect = (ingredientId) => {
+  const handleIngredientSelect = (ingredientId, ingredientName) => {
     if (isNavigatingRef.current) return; // biar ga double klik
     
     isNavigatingRef.current = true;
     selectIngredient(ingredientId);
-    const selectedIngredientName = allIngredients
-      .find(ing => ing.id === ingredientId)?.name || 'Unknown';
     
-    router.push(`/result/ingredients-filter-result?ingredients=${encodeURIComponent(selectedIngredientName)}`);
+    const name = ingredientName || 'Unknown';
+    
+    router.push(`/result/ingredients-filter-result?ingredients=${encodeURIComponent(name)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;
     }, 1000);
   };
 
-  const handleCountrySelect = (country) => {
+  const handleCountrySelect = (countryId, countryName) => {
     if (isNavigatingRef.current) return; 
     
     isNavigatingRef.current = true;
-    handleCountrySelection(country);
+    handleCountrySelection(countryName);
     
-    router.push(`/result/countries-filter-result?country=${encodeURIComponent(country)}`);
+    router.push(`/result/countries-filter-result?country=${encodeURIComponent(countryName)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;
@@ -84,9 +84,22 @@ export default function FilterScreen() {
       {activeTab === 'category' && (
         <CategoryFilter
           selectedCategory={selectedCategory}
-          onCategorySelect={handleCategorySelection}
+          onCategorySelect={handleCategorySelect}
         />
       )}
     </Box>
   );
+
+  function handleCategorySelect(categoryId, categoryName) {
+    if (isNavigatingRef.current) return;
+    
+    isNavigatingRef.current = true;
+    handleCategorySelection(categoryName);
+    
+    router.push(`/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
+    
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 1000);
+  }
 }

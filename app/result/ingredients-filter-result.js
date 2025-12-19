@@ -7,9 +7,9 @@ export default function IngredientsResultPage() {
   const { ingredients } = useLocalSearchParams();
   
   // ambil parameter ingredients dari URL
-  const selectedIngredients = typeof ingredients === 'string' 
-    ? ingredients.split(',') 
-    : [ingredients || 'Unknown'];
+  const selectedIngredient = typeof ingredients === 'string' 
+    ? ingredients 
+    : (ingredients || 'Unknown');
 
   const handleGoBack = () => {
     router.back();
@@ -17,7 +17,7 @@ export default function IngredientsResultPage() {
 
   return (
     <IngredientsFilterResult 
-      selectedIngredients={selectedIngredients}
+      selectedIngredient={selectedIngredient}
       onGoBack={handleGoBack}
     />
   );
