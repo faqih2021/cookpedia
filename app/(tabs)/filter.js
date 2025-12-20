@@ -86,7 +86,7 @@ export default function FilterScreen() {
     isNavigatingRef.current = true;
     handleCategorySelection(categoryName);
     
-    router.push(`/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
+    router.push(`/filter/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;
