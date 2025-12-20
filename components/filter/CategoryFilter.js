@@ -7,8 +7,10 @@ import {
   Box
 } from '@gluestack-ui/themed';
 import { Image, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function CategoryFilter({ onCategorySelect }) {
+  const router = useRouter();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +36,8 @@ export default function CategoryFilter({ onCategorySelect }) {
   }, []);
 
   const handleCategoryPress = (category) => {
-    onCategorySelect(category.id, category.name);
+    if (onCategorySelect) onCategorySelect(category.id, category.name);
+    router.push(`/filter/result/category-filter-result?category=${encodeURIComponent(category.name)}`);
   };
 
   if (loading) {
@@ -58,7 +61,7 @@ export default function CategoryFilter({ onCategorySelect }) {
       
       {/* Daftar kategori */}
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
       >

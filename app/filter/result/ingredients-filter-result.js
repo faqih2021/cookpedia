@@ -1,15 +1,14 @@
 import React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import IngredientsFilterResult from '../../components/filter/IngredientsFilterResult';
+import IngredientsFilterResult from '../../../components/filter/IngredientsFilterResult';
 
 export default function IngredientsResultPage() {
   const router = useRouter();
-  const { ingredients } = useLocalSearchParams();
+  const { ingredient } = useLocalSearchParams();
   
-  // ambil parameter ingredients dari URL
-  const selectedIngredient = typeof ingredients === 'string' 
-    ? ingredients 
-    : (ingredients || 'Unknown');
+  const selectedIngredient = typeof ingredient === 'string' 
+    ? ingredient 
+    : (ingredient || 'Chicken');
 
   const handleGoBack = () => {
     router.back();

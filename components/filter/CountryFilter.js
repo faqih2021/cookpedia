@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  ScrollView, 
   VStack, 
   Text, 
   HStack, 
   Box,
   Pressable
 } from '@gluestack-ui/themed';
-import { Image, ActivityIndicator } from 'react-native';
+import { Image, ActivityIndicator, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function CountryFilter({
   onCountrySelect
 }) {
+  const router = useRouter();
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        // Fetch areas dari TheMealDB
         const res = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list');
         const json = await res.json();
         const areas = json?.meals || [];
@@ -27,11 +27,9 @@ export default function CountryFilter({
         const countriesRes = await fetch('https://restcountries.com/v3.1/all?fields=name,demonyms,cca2,flags');
         const countriesData = await countriesRes.json();
 
-        // Mapping area ke data negara
         const mappedCountries = areas.map((item, idx) => {
           const areaName = item.strArea;
           
-          // Cari negara berdasarkan demonym (nama warga negara)
           const country = countriesData.find(c => {
             const demonymEng = c.demonyms?.eng?.m || c.demonyms?.eng?.f || '';
             return demonymEng.toLowerCase() === areaName.toLowerCase();
@@ -93,7 +91,10 @@ export default function CountryFilter({
             bg="$white"
             borderRadius="$2xl"
             p="$4"
-            onPress={() => onCountrySelect(countries[0]?.id, countries[0]?.name)}
+            onPress={() => {
+              if (onCountrySelect) onCountrySelect(countries[0]?.id, countries[0]?.name);
+              router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(countries[0]?.name)}`);
+            }}
             shadowColor="#000000"
             shadowOffset={{ width: 0, height: 4 }}
             shadowOpacity={0.15}
@@ -134,7 +135,7 @@ export default function CountryFilter({
         </VStack>
 
         <ScrollView
-          flex={1}
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
         >
@@ -151,7 +152,10 @@ export default function CountryFilter({
                     alignItems="center"
                     py="$4"
                     px="$3"
-                    onPress={() => onCountrySelect(country.id, country.name)}
+                    onPress={() => {
+                      if (onCountrySelect) onCountrySelect(country.id, country.name);
+                      router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(country.name)}`);
+                    }}
                     shadowColor="#000000"
                     shadowOffset={{ width: 0, height: 4 }}
                     shadowOpacity={0.15}

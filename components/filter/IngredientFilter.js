@@ -39,7 +39,10 @@ export default function IngredientFilter({
   }, []);
 
   const handleIngredientPress = (ingredient) => {
-    onIngredientSelect(ingredient.id, ingredient.name);
+    if (onIngredientSelect) {
+      onIngredientSelect(ingredient.id, ingredient.name);
+    }
+    router.push(`/filter/result/ingredients-filter-result?ingredient=${encodeURIComponent(ingredient.name)}`);
   };
 
   return (

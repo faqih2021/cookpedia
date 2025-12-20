@@ -24,7 +24,6 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
       }
       
       try {
-        // Filter by ingredient using TheMealDB API
         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${selectedIngredient}`);
         const json = await res.json();
         const meals = (json?.meals || []).map(m => ({
@@ -45,10 +44,9 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
   }, [selectedIngredient]);
 
   const handleRecipePress = (recipeId) => {
-    router.push(`/recipes/${recipeId}`);
+    router.push(`/filter/recipes/${recipeId}`);
   };
 
-  // Render recipe card
   const renderRecipeCard = (recipe) => (
     <Pressable
       key={recipe.id}
@@ -114,7 +112,6 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
         </HStack>
       </Box>
 
-      {/* content */}
       {loading ? (
         <Box flex={1} justifyContent="center" alignItems="center">
           <ActivityIndicator size="large" color="#00A86B" />

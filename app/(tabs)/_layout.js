@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Icon } from '@gluestack-ui/themed';
-import { Home, Search, Plus, BookOpen, User } from 'lucide-react-native';
+import { Home, Search, BookOpen, Heart  } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -31,6 +30,14 @@ export default function TabLayout() {
         options={{
           title: 'Filter',
           tabBarIcon: ({ color, size }) => <BookOpen size={size} color={color} />,
+        }}
+      />
+
+        <Tabs.Screen
+        name="favorite"
+        options={{
+          title: 'Favorite',
+          tabBarIcon: ({ color, size }) => <Heart size={size} color={color} />,
         }}
       />
     </Tabs>

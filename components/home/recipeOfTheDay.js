@@ -44,7 +44,7 @@ export default function RecipeOfTheDay() {
 
       <TouchableOpacity 
         activeOpacity={0.95} 
-        onPress={() => meal?.idMeal && router.push(`/recipes/${meal.idMeal}`)}
+        onPress={() => meal?.idMeal && router.push(`/filter/recipes/${meal.idMeal}`)}
       >
         <Box width="100%" borderRadius={14} bg="$white" overflow="hidden">
           <Image 

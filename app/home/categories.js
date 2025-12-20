@@ -41,23 +41,23 @@ export default function AllCategories() {
 
   return (
     <Box flex={1} bg="$white" px="$4" py="$12">
-      <Box flexDirection="row" alignItems="center" mb="$4" gap="$3">
-         <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
-                              <ArrowLeft size={24} color="#000" />
-                </Pressable>
-        <Text size="lg" fontWeight="$bold">All Categories</Text>
-       <Text color="#00A86B" ml="$2">
-        {categories.length} items
-      </Text>
+      <Box flexDirection="row" alignItems="center" justifyContent="space-between" mb="$4">
+        <Box flexDirection="row" alignItems="center">
+          <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
+            <ArrowLeft size={24} color="#000" />
+          </Pressable>
+          <Text size="lg" fontWeight="$bold" ml="$2">All Categories</Text>
+        </Box>
+        <Text color="#00A86B" fontWeight="$medium">{categories.length} items</Text>
       </Box>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 48 }}>
-        <Box flexDirection="row" flexWrap="wrap" justifyContent="space-between" gap="$3">
+        <Box flexDirection="row" flexWrap="wrap" justifyContent="space-between">
           {categories.map((c) => (
-            <TouchableOpacity key={c.id} onPress={() => router.push(`/categories/${c.id}`)} activeOpacity={0.85} style={{ marginBottom: 16, width: '47%' }}>
-              <Box height={140} borderRadius={16} bg="$white" borderWidth={1} borderColor="$coolGray200" justifyContent="center" alignItems="center" py="$4">
-                <Image source={c.icon} style={{ width: 70, height: 70, resizeMode: 'contain', marginBottom: 12 }} />
-                <Text fontWeight="$bold" fontSize="$md">{c.label}</Text>
+            <TouchableOpacity key={c.id} onPress={() => router.push(`/filter/categories/${c.id}`)} activeOpacity={0.85} style={{ marginBottom: 12 }}>
+              <Box width={160} height={120} borderRadius={12} bg="$white" borderWidth={1} borderColor="$coolGray200" justifyContent="center" alignItems="center">
+                <Image source={c.icon} style={{ width: 64, height: 64, resizeMode: 'contain', marginBottom: 8 }} />
+                <Text fontWeight="$bold">{c.label}</Text>
               </Box>
             </TouchableOpacity>
           ))}

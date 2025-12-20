@@ -4,11 +4,10 @@ import {
   Text, 
   VStack, 
   HStack, 
-  ScrollView,
   Pressable
 } from '@gluestack-ui/themed';
 import { ArrowLeft } from 'lucide-react-native';
-import { Image, ActivityIndicator } from 'react-native';
+import { Image, ActivityIndicator, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function CountryResultScreen({ selectedCountry = 'French', onGoBack }) {
@@ -44,7 +43,7 @@ export default function CountryResultScreen({ selectedCountry = 'French', onGoBa
   }, [selectedCountry]);
 
   const handleRecipePress = (recipeId) => {
-    router.push(`/recipes/${recipeId}`);
+    router.push(`/filter/recipes/${recipeId}`);
   };
 
   // Render recipe card
@@ -114,7 +113,6 @@ export default function CountryResultScreen({ selectedCountry = 'French', onGoBa
         </HStack>
       </Box>
 
-      {/* Content */}
       {loading ? (
         <Box flex={1} justifyContent="center" alignItems="center">
           <ActivityIndicator size="large" color="#00A86B" />

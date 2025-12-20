@@ -49,7 +49,7 @@ export default function Recommendation() {
 			<Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$3" px="$1">
 				<Text size="lg" fontWeight="$bold">Recommendation</Text>
 				<TouchableOpacity 
-					onPress={() => router.push({ pathname: '/recommendations', params: { items: JSON.stringify(items) } })}
+					onPress={() => router.push({ pathname: '/home/recommendations', params: { items: JSON.stringify(items) } })}
 					style={{ paddingHorizontal: 8, paddingVertical: 4 }}
 				>
 					<Text color="#00A86B">See all</Text>
@@ -62,7 +62,7 @@ export default function Recommendation() {
 						key={it.id}
 						activeOpacity={0.9}
 						style={{ marginRight: 16 }}
-						onPress={() => router.push(`/recipes/${it.id}`)}
+						onPress={() => router.push(`/filter/recipes/${it.id}`)}
 					>
 						<Box width={200} borderRadius={14} bg="$white" overflow="hidden" 
 							shadowColor="$coolGray300" shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.1} shadowRadius={4} elevation={2}>

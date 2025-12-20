@@ -41,7 +41,7 @@ export default function Categories({ selected, onSelect }) {
 		<Box mb="$4">
 			<Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$2">
 				<Text size="lg" fontWeight="$bold">Categories</Text>
-				<TouchableOpacity onPress={() => router.push('/categories')}>
+				<TouchableOpacity onPress={() => router.push('/home/categories')}>
 					<Text color="#00A86B">See all</Text>
 				</TouchableOpacity>
 			</Box>
@@ -58,7 +58,7 @@ export default function Categories({ selected, onSelect }) {
 							key={c.id}
 							onPress={() => {
 								onSelect && onSelect(c.id);
-								router.push(`/categories/${c.id}`);
+								router.push(`/filter/categories/${c.id}`);
 							}}
 							activeOpacity={0.85}
 							style={{ marginRight: 12 }}

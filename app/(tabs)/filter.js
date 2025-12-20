@@ -7,12 +7,8 @@ import FilterTabs from '../../components/filter/FilterTabs';
 import IngredientFilter from '../../components/filter/IngredientFilter';
 import CountryFilter from '../../components/filter/CountryFilter';
 import CategoryFilter from '../../components/filter/CategoryFilter';
-
-// hook buat manage state
 import useFilterState from '../../hooks/useFilterState';
 
-// data ingredients
-import { allIngredients } from '../../data/filterData';
 
 export default function FilterScreen() {
   const router = useRouter();
@@ -39,9 +35,7 @@ export default function FilterScreen() {
     isNavigatingRef.current = true;
     selectIngredient(ingredientId);
     
-    const name = ingredientName || 'Unknown';
-    
-    router.push(`/result/ingredients-filter-result?ingredients=${encodeURIComponent(name)}`);
+    router.push(`/filter/result/ingredients-filter-result?ingredients=${encodeURIComponent(selectedIngredientName)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;
@@ -54,7 +48,7 @@ export default function FilterScreen() {
     isNavigatingRef.current = true;
     handleCountrySelection(countryName);
     
-    router.push(`/result/countries-filter-result?country=${encodeURIComponent(countryName)}`);
+    router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(country)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;

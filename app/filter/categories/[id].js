@@ -78,12 +78,14 @@ export default function CategoryDetail() {
           </Box>
 
           <ScrollView showsVerticalScrollIndicator={false}>
-          <Box borderRadius={14} overflow="hidden" mb="$4">
-            <Image 
-              source={category?.icon || require('../../assets/breakfast.png')} 
-              style={{ width: '100%', height: 200, resizeMode: 'cover' }} 
-            />
-          </Box>
+          {category?.icon && (
+            <Box borderRadius={14} overflow="hidden" mb="$4">
+              <Image 
+                source={category.icon} 
+                style={{ width: '100%', height: 200, resizeMode: 'cover' }} 
+              />
+            </Box>
+          )}
 
             <Text size="lg" fontWeight="$bold" mb="$3">Recipes in {category?.label || 'Category'}</Text>
             
@@ -92,7 +94,7 @@ export default function CategoryDetail() {
                 {recipes.map((item) => (
                   <TouchableOpacity 
                     key={item.id} 
-                    onPress={() => router.push(`/recipes/${item.id}`)} 
+                    onPress={() => router.push(`/filter/recipes/${item.id}`)} 
                     activeOpacity={0.8}
                   >
                     <Box 

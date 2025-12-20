@@ -44,7 +44,7 @@ export default function CategoryFilterResult({ selectedCategory = 'Seafood', onG
   }, [selectedCategory]);
 
   const handleRecipePress = (recipeId) => {
-    router.push(`/recipes/${recipeId}`);
+    router.push(`/filter/recipes/${recipeId}`);
   };
 
   const renderRecipeCard = (recipe) => (

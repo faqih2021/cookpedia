@@ -56,12 +56,14 @@ export default function AllRecommendations() {
 
   return (
     <Box flex={1} bg="$white" px="$4" py="$12">
-      <Box flexDirection="row" alignItems="center" mb="$4" gap="$3">
-        <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
-          <ArrowLeft size={24} color="#000" />
-        </Pressable>
-        <Text size="lg" fontWeight="$bold">All Recommendations</Text>
-        <Text color="#00A86B" ml="$2">{recommendations.length} items</Text>
+      <Box flexDirection="row" alignItems="center" justifyContent="space-between" mb="$4">
+        <Box flexDirection="row" alignItems="center">
+          <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
+            <ArrowLeft size={24} color="#000" />
+          </Pressable>
+          <Text size="lg" fontWeight="$bold" ml="$2">All Recommendations</Text>
+        </Box>
+        <Text color="#00A86B" fontWeight="$medium">{recommendations.length} items</Text>
       </Box>
 
       <FlatList
@@ -69,7 +71,7 @@ export default function AllRecommendations() {
         data={recommendations}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(`/recipes/${item.id}`)} activeOpacity={0.9}>
+          <TouchableOpacity onPress={() => router.push(`/filter/recipes/${item.id}`)} activeOpacity={0.9}>
             <Box flexDirection="row" mb="$3" alignItems="center">
               <Image source={item.image} style={{ width: 96, height: 72, borderRadius: 8, marginRight: 12 }} />
               <Box flex={1}>

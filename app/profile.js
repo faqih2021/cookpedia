@@ -1,42 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Box, Text, VStack, HStack, Pressable } from '@gluestack-ui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, LogOut, Heart,ChevronRight } from 'lucide-react-native';
+import { ArrowLeft, LogOut } from 'lucide-react-native';
+import { useAuth } from '../hooks/useAuth';
+import { LogoutModal } from '../components/auth/authComponents';
 
+const avatarUri = 'https://i.pravatar.cc/150?img=12';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  
-  const [user, setUser] = useState({
-    name: 'Kiki Anderson',
-    email: 'kiki.anderson@email.com',
-    avatarUri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-    recipesCount: 12,
-    favoritesCount: 48
-  });
+  const { user, signOut } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Logout', 
-          style: 'destructive',
-          onPress: async () => {
-            router.replace('/login');
-          }
-        }
-      ]
-    );
+  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Chef';
+  const userEmail = user?.email || 'user@email.com';
+  const userAvatar = user?.user_metadata?.avatar_url || avatarUri;
+
+  const handleLogoutPress = () => {
+    setShowLogoutModal(true);
   };
 
-  const menuItems = [
-    { icon: Heart, label: 'My Favorites', color: '#FF6B6B', onPress: () => {} },
-  ];
+  const handleLogoutConfirm = async () => {
+    setLogoutLoading(true);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setLogoutLoading(false);
+      setShowLogoutModal(false);
+    }
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);
+  };
 
   return (
     <Box flex={1} bg="$white">
@@ -60,7 +61,7 @@ export default function ProfileScreen() {
               alignItems="center"
             >
               <Image
-                source={{ uri: user.avatarUri }}
+                source={{ uri: userAvatar }}
                 style={{ 
                   width: 100, 
                   height: 100, 
@@ -70,10 +71,10 @@ export default function ProfileScreen() {
                 }}
               />
               <Text color="white" size="xl" fontWeight="$bold" mt="$3">
-                {user.name}
+                {userName}
               </Text>
               <Text color="rgba(255,255,255,0.8)" mt="$1">
-                {user.email}
+                {userEmail}
               </Text>
 
               <HStack mt="$4" >
@@ -81,41 +82,10 @@ export default function ProfileScreen() {
             </Box>
           </Box>
 
-          {/* Menu Items */}
           <VStack px="$5" space="sm">
-            {menuItems.map((item, index) => (
-              <Pressable
-                key={index}
-                onPress={item.onPress}
-                bg="$white"
-                borderRadius={12}
-                p="$4"
-                borderWidth={1}
-                borderColor="$coolGray100"
-              >
-                <HStack alignItems="center" justifyContent="space-between">
-                  <HStack alignItems="center" space="md">
-                    <Box 
-                      width={40} 
-                      height={40} 
-                      borderRadius={10} 
-                      bg={item.color + '20'}
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <item.icon size={20} color={item.color} />
-                    </Box>
-                    <Text fontWeight="$medium" color="$coolGray800">
-                      {item.label}
-                    </Text>
-                  </HStack>
-                  <ChevronRight size={20} color="#9CA3AF" />
-                </HStack>
-              </Pressable>
-            ))}
 
             <Pressable
-              onPress={handleLogout}
+              onPress={handleLogoutPress}
               bg="$white"
               borderRadius={12}
               p="$4"
@@ -134,6 +104,14 @@ export default function ProfileScreen() {
 
           <Box height={40} />
         </ScrollView>
+
+        {/* Logout Modal */}
+        <LogoutModal
+          isOpen={showLogoutModal}
+          onClose={handleLogoutCancel}
+          onConfirm={handleLogoutConfirm}
+          loading={logoutLoading}
+        />
       </SafeAreaView>
     </Box>
   );
