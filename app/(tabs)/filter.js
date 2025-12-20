@@ -3,16 +3,12 @@ import { Box } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 
 // import komponen filter
-import FilterTabs from '../../components/filter/filterTabs';
-import IngredientFilter from '../../components/filter/ingredientFilter';
-import CountryFilter from '../../components/filter/countryFilter';
-import CategoryFilter from '../../components/filter/categoryFilter';
-
-// hook buat manage state
+import FilterTabs from '../../components/filter/FilterTabs';
+import IngredientFilter from '../../components/filter/IngredientFilter';
+import CountryFilter from '../../components/filter/CountryFilter';
+import CategoryFilter from '../../components/filter/CategoryFilter';
 import useFilterState from '../../hooks/useFilterState';
 
-// data ingredients
-import { allIngredients } from '../../data/filterData';
 
 export default function FilterScreen() {
   const router = useRouter();
@@ -33,13 +29,11 @@ export default function FilterScreen() {
   } = useFilterState();
 
   // handle select
-  const handleIngredientSelect = (ingredientId) => {
+  const handleIngredientSelect = (ingredientId, ingredientName) => {
     if (isNavigatingRef.current) return; // biar ga double klik
     
     isNavigatingRef.current = true;
     selectIngredient(ingredientId);
-    const selectedIngredientName = allIngredients
-      .find(ing => ing.id === ingredientId)?.name || 'Unknown';
     
     router.push(`/filter/result/ingredients-filter-result?ingredients=${encodeURIComponent(selectedIngredientName)}`);
     
@@ -48,11 +42,11 @@ export default function FilterScreen() {
     }, 1000);
   };
 
-  const handleCountrySelect = (country) => {
+  const handleCountrySelect = (countryId, countryName) => {
     if (isNavigatingRef.current) return; 
     
     isNavigatingRef.current = true;
-    handleCountrySelection(country);
+    handleCountrySelection(countryName);
     
     router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(country)}`);
     
@@ -84,9 +78,22 @@ export default function FilterScreen() {
       {activeTab === 'category' && (
         <CategoryFilter
           selectedCategory={selectedCategory}
-          onCategorySelect={handleCategorySelection}
+          onCategorySelect={handleCategorySelect}
         />
       )}
     </Box>
   );
+
+  function handleCategorySelect(categoryId, categoryName) {
+    if (isNavigatingRef.current) return;
+    
+    isNavigatingRef.current = true;
+    handleCategorySelection(categoryName);
+    
+    router.push(`/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
+    
+    setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 1000);
+  }
 }
