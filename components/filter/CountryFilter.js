@@ -1,14 +1,13 @@
 import React from 'react';
 import { 
-  ScrollView, 
   VStack, 
   Text, 
   HStack, 
   Box,
   Pressable
 } from '@gluestack-ui/themed';
-import { Image } from 'react-native';
-import CountryCard from './CountryCard';
+import { Image, ScrollView } from 'react-native';
+import CountryCard from './countryCard';
 import { featuredCountries, allCountries, popularIngredients } from '../../data/filterData';
 
 export default function CountryFilter({
@@ -88,7 +87,7 @@ export default function CountryFilter({
 
         {/* Konten all country */}
         <ScrollView
-          flex={1}
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
         >

@@ -1,13 +1,12 @@
 import React from 'react';
 import { 
-  ScrollView, 
   VStack, 
   Text, 
   HStack, 
   Pressable,
   Box
 } from '@gluestack-ui/themed';
-import { Image } from 'react-native';
+import { Image, ScrollView } from 'react-native';
 
 // import gambar ingredients
 const carrotImg = require('../../assets/carrot.png');
@@ -73,7 +72,7 @@ export default function IngredientFilter({
 
         {/* Konten all ingredients */}
         <ScrollView
-          flex={1}
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
         >

@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { CATEGORIES, RECOMMENDATIONS } from '../../datas';
+import { CATEGORIES, RECOMMENDATIONS } from '../../../datas';
 
 export default function CategoryDetail() {
   const params = useLocalSearchParams();
@@ -18,7 +18,7 @@ export default function CategoryDetail() {
 
   <ScrollView showsVerticalScrollIndicator={false}>
         <Box borderRadius={14} overflow="hidden" mb="$4">
-          <Image source={category ? category.icon : require('../../assets/breakfast.png')} style={{ width: '100%', height: 200, resizeMode: 'cover' }} />
+          <Image source={category ? category.icon : require('../../../assets/breakfast.png')} style={{ width: '100%', height: 200, resizeMode: 'cover' }} />
         </Box>
         <Text color="$coolGray600" mb="$4">{category ? category.description : ''}</Text>
 
@@ -26,7 +26,7 @@ export default function CategoryDetail() {
         {category && (
           <Box>
             {RECOMMENDATIONS.filter((r) => r.category === category.id).map((item) => (
-              <TouchableOpacity key={item.id} onPress={() => router.push(`/recipes/${item.id}`)} activeOpacity={0.9}>
+              <TouchableOpacity key={item.id} onPress={() => router.push(`/filter/recipes/${item.id}`)} activeOpacity={0.9}>
                 <Box flexDirection="row" mb="$3" alignItems="center">
                   <Image source={item.image} style={{ width: 96, height: 72, borderRadius: 8, marginRight: 12 }} />
                   <Box flex={1}>

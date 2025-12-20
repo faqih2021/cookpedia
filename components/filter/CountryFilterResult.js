@@ -4,11 +4,10 @@ import {
   Text, 
   VStack, 
   HStack, 
-  ScrollView,
   Pressable
 } from '@gluestack-ui/themed';
 import { ArrowLeft } from 'lucide-react-native';
-import { Image } from 'react-native';
+import { Image, ScrollView } from 'react-native';
 
 export default function CountryResultScreen({ selectedCountry = 'French', onGoBack }) {
   const recipes = [
@@ -59,7 +58,10 @@ export default function CountryResultScreen({ selectedCountry = 'French', onGoBa
       </Box>
 
       {/* Grid */}
-      <ScrollView flex={1} p="$4">
+      <ScrollView 
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 16 }}
+      >
         <VStack space="lg">
           {/* Row 1*/}
           <HStack space="md" justifyContent="space-between">

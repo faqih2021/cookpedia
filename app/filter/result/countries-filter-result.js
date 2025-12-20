@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import CountryFilterResult from '../../components/filter/CountryFilterResult';
+import CountryFilterResult from '../../../components/filter/countryFilterResult';
 
 export default function CountriesResultPage() {
   const router = useRouter();

@@ -11,7 +11,7 @@ export default function Recommendation({ items = RECOMMENDATIONS }) {
 		<Box mb="$4">
 			<Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$2">
 				<Text size="lg" fontWeight="$bold">Recommendation</Text>
-				<TouchableOpacity onPress={() => router.push('/recommendations')}>
+				<TouchableOpacity onPress={() => router.push('/home/recommendations')}>
 					<Text color="#00A86B">See all</Text>
 				</TouchableOpacity>
 			</Box>
@@ -22,7 +22,7 @@ export default function Recommendation({ items = RECOMMENDATIONS }) {
 						key={it.id}
 						activeOpacity={0.9}
 						style={{ marginRight: 12 }}
-						onPress={() => router.push(`/recipes/${it.id}`)}
+						onPress={() => router.push(`/filter/recipes/${it.id}`)}
 					>
 						<Box width={240} borderRadius={14} bg="$white" overflow="hidden">
 							<Image source={it.image} style={{ width: '100%', height: 140, resizeMode: 'cover' }} />

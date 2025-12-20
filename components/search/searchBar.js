@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Input, InputField, InputSlot, InputIcon, Button, ButtonText } from "@gluestack-ui/themed";
-import { Search } from "lucide-react-native";
+import { Box, Input, InputField, InputSlot, Icon, Button, ButtonText } from "@gluestack-ui/themed";
+import { SearchIcon } from "lucide-react-native";
 
 export default function SearchBar({ 
   searchQuery, 
@@ -31,13 +31,13 @@ export default function SearchBar({
             h={56}
             sx={{
               ":focus": {
-                borderColor: "$green500",
+                borderColor: "#00A86B",
                 bg: "$white",
               },
             }}
           >
             <InputSlot pl="$4">
-              <InputIcon as={Search} color="$coolGray400" size="xl" />
+              <Icon as={SearchIcon} color="$coolGray400" size="xl" />
             </InputSlot>
             <InputField
               placeholder={`Search ${searchType === "recipe" ? "recipes" : "categories"}...`}
@@ -55,7 +55,7 @@ export default function SearchBar({
         {searchQuery.length > 0 && (
           <Button
             size="xl"
-            bg="$green500"
+            bg="#00A86B"
             borderRadius="$xl"
             h={56}
             px="$5"
@@ -74,12 +74,12 @@ export default function SearchBar({
           size="md"
           variant={searchType === "recipe" ? "solid" : "outline"}
           action={searchType === "recipe" ? "primary" : "secondary"}
-          bg={searchType === "recipe" ? "$green500" : "transparent"}
-          borderColor="$green500"
+          bg={searchType === "recipe" ? "#00A86B" : "transparent"}
+          borderColor="#00A86B"
           borderRadius="$lg"
           onPress={() => handleSearchTypeChange("recipe")}
         >
-          <ButtonText color={searchType === "recipe" ? "$white" : "$green500"}>
+          <ButtonText color={searchType === "recipe" ? "$white" : "#00A86B"}>
             Recipe
           </ButtonText>
         </Button>
@@ -89,12 +89,12 @@ export default function SearchBar({
           size="md"
           variant={searchType === "category" ? "solid" : "outline"}
           action={searchType === "category" ? "primary" : "secondary"}
-          bg={searchType === "category" ? "$green500" : "transparent"}
-          borderColor="$green500"
+          bg={searchType === "category" ? "#00A86B" : "transparent"}
+          borderColor="#00A86B"
           borderRadius="$lg"
           onPress={() => handleSearchTypeChange("category")}
         >
-          <ButtonText color={searchType === "category" ? "$white" : "$green500"}>
+          <ButtonText color={searchType === "category" ? "$white" : "#00A86B"}>
             Category
           </ButtonText>
         </Button>

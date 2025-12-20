@@ -4,11 +4,10 @@ import {
   Text, 
   VStack, 
   HStack, 
-  ScrollView,
   Pressable
 } from '@gluestack-ui/themed';
 import { ArrowLeft } from 'lucide-react-native';
-import { Image } from 'react-native';
+import { Image, ScrollView } from 'react-native';
 
 export default function IngredientsResultScreen({ selectedIngredients = ['Chicken Breast'], onGoBack }) {
   // data resep
@@ -65,7 +64,10 @@ export default function IngredientsResultScreen({ selectedIngredients = ['Chicke
       </Box>
 
       {/* grid*/}
-      <ScrollView flex={1} p="$4">
+      <ScrollView 
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 16 }}
+      >
         <VStack space="lg">
           {/* row pertama */}
           <HStack space="md" justifyContent="space-between">

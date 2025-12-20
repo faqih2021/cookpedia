@@ -2,10 +2,9 @@ import React from 'react';
 import { 
   VStack, 
   Text, 
-  Pressable,
-  ScrollView
+  Pressable
 } from '@gluestack-ui/themed';
-import { Image } from 'react-native';
+import { Image, ScrollView } from 'react-native';
 import { categories } from '../../data/filterData';
 
 export default function CategoryFilter({ onCategorySelect }) {
@@ -23,7 +22,7 @@ export default function CategoryFilter({ onCategorySelect }) {
       
       {/* Daftar kategiri*/}
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
       >

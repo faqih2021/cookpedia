@@ -10,7 +10,7 @@ export default function Categories({ categories = CATEGORIES, selected, onSelect
 		<Box mb="$4">
 			<Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$2">
 				<Text size="lg" fontWeight="$bold">Categories</Text>
-				<TouchableOpacity onPress={() => router.push('/categories')}>
+				<TouchableOpacity onPress={() => router.push('/home/categories')}>
 					<Text color="#00A86B">See all</Text>
 				</TouchableOpacity>
 			</Box>

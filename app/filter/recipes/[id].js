@@ -2,7 +2,7 @@ import React from 'react';
 import { Image } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
 import { useLocalSearchParams } from 'expo-router';
-import { RECOMMENDATIONS } from '../../datas';
+import { RECOMMENDATIONS } from '../../../datas';
 
 export default function RecipeDetail() {
   const { id } = useLocalSearchParams();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import IngredientsFilterResult from '../../components/filter/IngredientsFilterResult';
+import IngredientsFilterResult from '../../../components/filter/ingredientsFilterResult';
 
 export default function IngredientsResultPage() {
   const router = useRouter();

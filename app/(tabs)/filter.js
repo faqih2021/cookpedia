@@ -3,10 +3,10 @@ import { Box } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 
 // import komponen filter
-import FilterTabs from '../../components/filter/FilterTabs';
-import IngredientFilter from '../../components/filter/IngredientFilter';
-import CountryFilter from '../../components/filter/CountryFilter';
-import CategoryFilter from '../../components/filter/CategoryFilter';
+import FilterTabs from '../../components/filter/filterTabs';
+import IngredientFilter from '../../components/filter/ingredientFilter';
+import CountryFilter from '../../components/filter/countryFilter';
+import CategoryFilter from '../../components/filter/categoryFilter';
 
 // hook buat manage state
 import useFilterState from '../../hooks/useFilterState';
@@ -41,7 +41,7 @@ export default function FilterScreen() {
     const selectedIngredientName = allIngredients
       .find(ing => ing.id === ingredientId)?.name || 'Unknown';
     
-    router.push(`/result/ingredients-filter-result?ingredients=${encodeURIComponent(selectedIngredientName)}`);
+    router.push(`/filter/result/ingredients-filter-result?ingredients=${encodeURIComponent(selectedIngredientName)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;
@@ -54,7 +54,7 @@ export default function FilterScreen() {
     isNavigatingRef.current = true;
     handleCountrySelection(country);
     
-    router.push(`/result/countries-filter-result?country=${encodeURIComponent(country)}`);
+    router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(country)}`);
     
     setTimeout(() => {
       isNavigatingRef.current = false;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Image, TouchableOpacity } from 'react-native';
 import { Box, Text } from '@gluestack-ui/themed';
-import { RECOMMENDATIONS } from '../datas';
+import { RECOMMENDATIONS } from '../../datas';
 import { useRouter } from 'expo-router';
 
 export default function AllRecommendations() {
@@ -19,7 +19,7 @@ export default function AllRecommendations() {
         data={RECOMMENDATIONS}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(`/recipes/${item.id}`)} activeOpacity={0.9}>
+          <TouchableOpacity onPress={() => router.push(`/filter/recipes/${item.id}`)} activeOpacity={0.9}>
             <Box flexDirection="row" mb="$3" alignItems="center">
               <Image source={item.image} style={{ width: 96, height: 72, borderRadius: 8, marginRight: 12 }} />
               <Box flex={1}>
