@@ -1,49 +1,72 @@
-import React, { useState } from 'react';
-import { Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Box, Text, Pressable } from '@gluestack-ui/themed';
-import { LogOut } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 import Categories from '../../components/home/categories';
 import Recommendation from '../../components/home/recommendation';
 import RecipeOfTheDay from '../../components/home/recipeOfTheDay';
-import { CATEGORIES, RECOMMENDATIONS } from '../../datas';
 import { useAuth } from '../../hooks/useAuth';
-import { LogoutModal } from '../../components/auth/authComponents';
+
+const avatarUri = 'https://i.pravatar.cc/150?img=12';
 
 export default function HomeScreen({
   heading = 'What would you like to cook today?',
-  avatarUri = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-  selectedCategory = 'breakfast',
+  selectedCategory = 'beef',
   onSelectCategory = () => {},
 } = {}) {
-  const { user, signOut } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [logoutLoading, setLogoutLoading] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
+  const [categories, setCategories] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Get user name from metadata or email
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const catRes = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+        const catJson = await catRes.json();
+        const cats = (catJson?.categories || []).slice(0, 4).map(c => ({
+          id: c.strCategory.toLowerCase(),
+          label: c.strCategory,
+          icon: { uri: c.strCategoryThumb }
+        }));
+        setCategories(cats);
+
+        const recPromises = [];
+        for (let i = 0; i < 4; i++) {
+          recPromises.push(fetch('https://www.themealdb.com/api/json/v1/1/random.php'));
+        }
+        const recResponses = await Promise.all(recPromises);
+        const recJsons = await Promise.all(recResponses.map(r => r.json()));
+        const recs = recJsons.map(json => {
+          const meal = json?.meals?.[0];
+          return meal ? {
+            id: meal.idMeal,
+            title: meal.strMeal,
+            by: meal.strArea ? `${meal.strArea} Cuisine` : 'TheMealDB',
+            image: { uri: meal.strMealThumb }
+          } : null;
+        }).filter(Boolean);
+        setRecommendations(recs);
+      } catch (e) {
+        console.error('Error fetching home data:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Chef';
-
-  const handleLogoutPress = () => {
-    setShowLogoutModal(true);
-  };
-
-  const handleLogoutConfirm = async () => {
-    setLogoutLoading(true);
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      setLogoutLoading(false);
-      setShowLogoutModal(false);
-    }
-  };
-
-  const handleLogoutCancel = () => {
-    setShowLogoutModal(false);
-  };
 
   return (
     <Box flex={1} bg="white">
+      {loading ? (
+        <Box flex={1} justifyContent="center" alignItems="center">
+          <ActivityIndicator size="large" color="#00A86B" />
+        </Box>
+      ) : (
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 48, paddingBottom: 32 }}>
         <Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$4">
           <Box width="70%">
@@ -53,43 +76,24 @@ export default function HomeScreen({
 
           <Box flexDirection="row" alignItems="center">
             <Pressable
-              onPress={handleLogoutPress}
-              mr="$3"
-              w={40}
-              h={40}
-              borderRadius={20}
-              bg="#FEE2E2"
-              justifyContent="center"
-              alignItems="center"
-              $active={{
-                bg: '#FECACA',
-              }}
+              onPress={() => router.push('/profile')}
             >
-              <LogOut size={18} color="#EF4444" />
+              <Image
+                source={{ uri: user?.user_metadata?.avatar_url || avatarUri }}
+                style={{ width: 48, height: 48, borderRadius: 24 }}
+              />
             </Pressable>
-            
-            <Image
-              source={{ uri: user?.user_metadata?.avatar_url || avatarUri }}
-              style={{ width: 48, height: 48, borderRadius: 24 }}
-            />
           </Box>
         </Box>
 
-        <Categories categories={CATEGORIES.slice(0, 4)} selected={selectedCategory} onSelect={onSelectCategory} />
+        <Categories categories={categories} selected={selectedCategory} onSelect={onSelectCategory} />
 
-        <Recommendation items={RECOMMENDATIONS.slice(0, 4)} />
+        <Recommendation items={recommendations} />
 
         <RecipeOfTheDay/>
 
       </ScrollView>
-
-      {/* Logout Modal */}
-      <LogoutModal
-        isOpen={showLogoutModal}
-        onClose={handleLogoutCancel}
-        onConfirm={handleLogoutConfirm}
-        loading={logoutLoading}
-      />
+      )}
     </Box>
   );
 }

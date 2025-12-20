@@ -1,52 +1,91 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, Image, TouchableOpacity } from "react-native";
+import { ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Box, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import SearchBar from "../../components/search/searchBar";
 
-// Data recipes
-const ALL_RECIPES = [
-  { id: '1', title: 'Ayam Goreng', by: 'By Paki', image: require('../../assets/ayam-goreng.jpeg') },
-  { id: '2', title: 'Belalang Goreng', by: 'By Dwik', image: require('../../assets/belalang.jpeg') },
-  { id: '3', title: 'Tempe Allright', by: 'By Tang', image: require('../../assets/tempe.jpeg') },
-  { id: '4', title: 'Sop Buah', by: 'By Syeghandy', image: require('../../assets/sopbuah.jpg') },
-  { id: '5', title: 'Tahu Tek', by: 'By Mangdalla', image: require('../../assets/tahutek.jpg') }
-];
-
-// Data categories
-const ALL_CATEGORIES = [
-  { id: 'breakfast', label: 'Breakfast', icon: require('../../assets/breakfast.png') },
-  { id: 'lunch', label: 'Lunch', icon: require('../../assets/lunch.png') },
-  { id: 'dinner', label: 'Dinner', icon: require('../../assets/dinner.png') },
-  { id: 'dessert', label: 'Dessert', icon: require('../../assets/dessert.png') },
-  { id: 'snack', label: 'Snack', icon: require('../../assets/snack.png') }
-];
-
 export default function SearchScreen() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState("recipe");
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [allCategories, setAllCategories] = useState([]);
+
+  // Fetch all categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+        const json = await res.json();
+        const categories = json?.categories || [];
+        const mapped = categories.map(cat => ({
+          id: cat.strCategory.toLowerCase(),
+          label: cat.strCategory,
+          icon: { uri: cat.strCategoryThumb },
+          description: cat.strCategoryDescription
+        }));
+        setAllCategories(mapped);
+      } catch (e) {
+        console.error('Error fetching categories:', e);
+        setAllCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Search effect - filter results when query or type changes
   useEffect(() => {
-    if (searchQuery.trim().length > 0) {
-      const query = searchQuery.trim().toLowerCase();
-      
-      if (searchType === "recipe") {
-        const results = ALL_RECIPES.filter(recipe => 
-          recipe.title.toLowerCase().includes(query)
-        ).slice(0, 10); // Limit 10 results
-        setSearchResults(results);
+    const searchData = async () => {
+      if (searchQuery.trim().length > 0) {
+        const query = searchQuery.trim().toLowerCase();
+        const firstLetter = query.charAt(0);
+        setLoading(true);
+
+        try {
+          if (searchType === "recipe") {
+            // Fetch recipes by first letter
+            const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${firstLetter}`);
+            const json = await res.json();
+            const meals = json?.meals || [];
+            
+            // Filter by query and map results
+            const results = meals
+              .filter(meal => meal.strMeal.toLowerCase().includes(query))
+              .map(meal => ({
+                id: meal.idMeal,
+                title: meal.strMeal,
+                by: meal.strArea ? `${meal.strArea} Cuisine` : 'TheMealDB',
+                image: { uri: meal.strMealThumb },
+                category: meal.strCategory
+              }))
+              .slice(0, 10);
+            
+            setSearchResults(results);
+          } else {
+            // Filter categories by first letter
+            const results = allCategories
+              .filter(category => category.label.toLowerCase().startsWith(firstLetter))
+              .filter(category => category.label.toLowerCase().includes(query))
+              .slice(0, 10);
+            
+            setSearchResults(results);
+          }
+        } catch (e) {
+          console.error('Search error:', e);
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
       } else {
-        const results = ALL_CATEGORIES.filter(category => 
-          category.label.toLowerCase().includes(query)
-        ).slice(0, 10); // Limit 10 results
-        setSearchResults(results);
+        setSearchResults([]);
       }
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery, searchType]);
+    };
+
+    const debounce = setTimeout(searchData, 300);
+    return () => clearTimeout(debounce);
+  }, [searchQuery, searchType, allCategories]);
 
   const handleSearchTypeChange = (type) => {
     setSearchType(type);
@@ -64,9 +103,9 @@ export default function SearchScreen() {
 
   const handleResultPress = (item) => {
     if (searchType === "recipe") {
-      console.log("Selected recipe:", item.title);
+      router.push(`/filter/recipes/${item.id}`);
     } else {
-      console.log("Selected category:", item.label);
+      router.push(`/filter/categories/${item.id}`);
     }
   };
 
@@ -85,18 +124,25 @@ export default function SearchScreen() {
         shadowRadius={4}
         elevation={2}
       >
-        <Image
-          source={recipe.image}
-          style={{ width: 100, height: 100 }}
-          resizeMode="cover"
-        />
+        {recipe.image && (
+          <Image
+            source={recipe.image}
+            style={{ width: 100, height: 100 }}
+            resizeMode="cover"
+          />
+        )}
         <Box p="$3" flex={1} justifyContent="center">
-          <Text fontSize="$md" fontWeight="$bold" color="$coolGray800" mb="$1">
+          <Text fontSize="$md" fontWeight="$bold" color="$coolGray800" mb="$1" numberOfLines={2}>
             {recipe.title}
           </Text>
           <Text fontSize="$sm" color="$coolGray500">
             {recipe.by}
           </Text>
+          {recipe.category && (
+            <Text fontSize="$xs" color="#00A86B" mt="$1">
+              {recipe.category}
+            </Text>
+          )}
         </Box>
       </Box>
     </TouchableOpacity>
@@ -117,11 +163,13 @@ export default function SearchScreen() {
         shadowRadius={4}
         elevation={2}
       >
-        <Image
-          source={category.icon}
-          style={{ width: 80, height: 80 }}
-          resizeMode="cover"
-        />
+        {category.icon && (
+          <Image
+            source={category.icon}
+            style={{ width: 80, height: 80 }}
+            resizeMode="cover"
+          />
+        )}
         <Box p="$3" flex={1} justifyContent="center">
           <Text fontSize="$lg" fontWeight="$bold" color="$coolGray800">
             {category.label}
@@ -155,34 +203,45 @@ export default function SearchScreen() {
           {/* Search Results */}
           {searchQuery.trim().length > 0 && (
             <Box mt="$4">
-              <Text fontSize="$sm" color="$coolGray500" mb="$3">
-                {searchResults.length > 0 
-                  ? `Found ${searchResults.length} ${searchType === "recipe" ? "recipes" : "categories"}`
-                  : `No ${searchType === "recipe" ? "recipes" : "categories"} found`
-                }
-              </Text>
-
-              {searchResults.length > 0 ? (
-                searchResults.map((item) => (
-                  searchType === "recipe" 
-                    ? <RecipeResultCard key={item.id} recipe={item} />
-                    : <CategoryResultCard key={item.id} category={item} />
-                ))
-              ) : (
-                <Box
-                  bg="$coolGray50"
-                  p="$6"
-                  borderRadius="$xl"
-                  style={{ alignItems: 'center' }}
-                >
-                  <Text fontSize="$4xl" mb="$2">🔍</Text>
-                  <Text fontSize="$md" fontWeight="$semibold" color="$coolGray600" mb="$1">
-                    No results found
-                  </Text>
-                  <Text fontSize="$sm" color="$coolGray400" textAlign="center">
-                    Try different keywords
+              {loading ? (
+                <Box py="$8" alignItems="center">
+                  <ActivityIndicator size="large" color="#00A86B" />
+                  <Text fontSize="$sm" color="$coolGray500" mt="$2">
+                    Searching...
                   </Text>
                 </Box>
+              ) : (
+                <>
+                  <Text fontSize="$sm" color="$coolGray500" mb="$3">
+                    {searchResults.length > 0 
+                      ? `Found ${searchResults.length} ${searchType === "recipe" ? "recipes" : "categories"}`
+                      : `No ${searchType === "recipe" ? "recipes" : "categories"} found`
+                    }
+                  </Text>
+
+                  {searchResults.length > 0 ? (
+                    searchResults.map((item) => (
+                      searchType === "recipe" 
+                        ? <RecipeResultCard key={item.id} recipe={item} />
+                        : <CategoryResultCard key={item.id} category={item} />
+                    ))
+                  ) : (
+                    <Box
+                      bg="$coolGray50"
+                      p="$6"
+                      borderRadius="$xl"
+                      style={{ alignItems: 'center' }}
+                    >
+                      <Text fontSize="$4xl" mb="$2">🔍</Text>
+                      <Text fontSize="$md" fontWeight="$semibold" color="$coolGray600" mb="$1">
+                        No results found
+                      </Text>
+                      <Text fontSize="$sm" color="$coolGray400" textAlign="center">
+                        Try different keywords
+                      </Text>
+                    </Box>
+                  )}
+                </>
               )}
             </Box>
           )}

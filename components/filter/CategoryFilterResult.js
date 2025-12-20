@@ -11,20 +11,20 @@ import { ArrowLeft } from 'lucide-react-native';
 import { Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 
-export default function IngredientsResultScreen({ selectedIngredient, onGoBack }) {
+export default function CategoryFilterResult({ selectedCategory = 'Seafood', onGoBack }) {
   const router = useRouter();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      if (!selectedIngredient) {
+      if (!selectedCategory) {
         setLoading(false);
         return;
       }
       
       try {
-        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${selectedIngredient}`);
+        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${selectedCategory}`);
         const json = await res.json();
         const meals = (json?.meals || []).map(m => ({
           id: m.idMeal,
@@ -41,7 +41,7 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
     };
 
     fetchRecipes();
-  }, [selectedIngredient]);
+  }, [selectedCategory]);
 
   const handleRecipePress = (recipeId) => {
     router.push(`/filter/recipes/${recipeId}`);
@@ -94,24 +94,25 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
   };
 
   return (
-    <Box flex={1} bg="white">
-      {/* header */}
-      <Box bg="#00A86B" pt="$12" pb="$4">
-        <HStack alignItems="center" px="$4" space="md">
+    <Box flex={1} bg="$white">
+      {/* Header */}
+      <Box bg="#00A86B" pt="$16" pb="$2" px="$6">
+        <HStack alignItems="center" space="md" mb="$4">
           <Pressable onPress={onGoBack}>
             <ArrowLeft size={24} color="white" />
           </Pressable>
           <VStack flex={1}>
-            <Text color="white" fontWeight="$bold" size="lg">
-              Recipes with {selectedIngredient || 'Ingredient'}
+            <Text fontSize="$xl" fontWeight="$bold" color="white">
+              {selectedCategory} Recipes
             </Text>
-            <Text color="white" size="sm" opacity={0.8}>
+            <Text fontSize="$sm" color="rgba(255,255,255,0.8)">
               {recipes.length} recipes found
             </Text>
           </VStack>
         </HStack>
       </Box>
 
+      {/* Content */}
       {loading ? (
         <Box flex={1} justifyContent="center" alignItems="center">
           <ActivityIndicator size="large" color="#00A86B" />
@@ -148,7 +149,7 @@ export default function IngredientsResultScreen({ selectedIngredient, onGoBack }
             No recipes found
           </Text>
           <Text color="$coolGray400" textAlign="center" size="sm">
-            Try selecting a different ingredient
+            Try selecting a different category
           </Text>
           <Pressable 
             bg="#F0FDF4" 
