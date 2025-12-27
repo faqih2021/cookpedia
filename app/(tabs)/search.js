@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Box, Text } from "@gluestack-ui/themed";
+import { ScrollView, Image, TouchableOpacity } from "react-native";
+import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import SearchBar from "../../components/search/searchBar";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -204,12 +205,41 @@ export default function SearchScreen() {
           {searchQuery.trim().length > 0 && (
             <Box mt="$4">
               {loading ? (
-                <Box py="$8" alignItems="center">
-                  <ActivityIndicator size="large" color="#00A86B" />
-                  <Text fontSize="$sm" color="$coolGray500" mt="$2">
-                    Searching...
-                  </Text>
-                </Box>
+                <VStack space="md" py="$4">
+                  {[1, 2, 3, 4].map((item) => (
+                    <Box
+                      key={item}
+                      bg="white"
+                      borderRadius="$xl"
+                      overflow="hidden"
+                      flexDirection="row"
+                      shadowColor="$coolGray300"
+                      shadowOffset={{ width: 0, height: 2 }}
+                      shadowOpacity={0.1}
+                      shadowRadius={4}
+                      elevation={2}
+                    >
+                      <Skeleton 
+                        variant="sharp" 
+                        style={{ width: 96, height: 96 }} 
+                      />
+                      <VStack p="$3" flex={1} justifyContent="center" space="sm">
+                        <Skeleton 
+                          variant="rounded" 
+                          style={{ width: '90%', height: 20, borderRadius: 6 }} 
+                        />
+                        <Skeleton 
+                          variant="rounded" 
+                          style={{ width: 112, height: 12, borderRadius: 4 }} 
+                        />
+                        <Skeleton 
+                          variant="rounded" 
+                          style={{ width: 64, height: 12, borderRadius: 4 }} 
+                        />
+                      </VStack>
+                    </Box>
+                  ))}
+                </VStack>
               ) : (
                 <>
                   <Text fontSize="$sm" color="$coolGray500" mb="$3">

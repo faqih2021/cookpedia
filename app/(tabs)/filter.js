@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Box } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 
@@ -11,7 +11,6 @@ import useFilterState from '../../hooks/useFilterState';
 
 export default function FilterScreen() {
   const router = useRouter();
-  const isNavigatingRef = useRef(false);
   
   const {
     // state yang dipake
@@ -28,29 +27,18 @@ export default function FilterScreen() {
   } = useFilterState();
 
   const handleIngredientSelect = (ingredientId, ingredientName) => {
-    if (isNavigatingRef.current) return; // biar ga double klik
-    
-    isNavigatingRef.current = true;
     selectIngredient(ingredientId);
-    
     router.push(`/filter/result/ingredients-filter-result?ingredient=${encodeURIComponent(ingredientName)}`);
-    
-    setTimeout(() => {
-      isNavigatingRef.current = false;
-    }, 1000);
   };
 
   const handleCountrySelect = (countryId, countryName) => {
-    if (isNavigatingRef.current) return; 
-    
-    isNavigatingRef.current = true;
     handleCountrySelection(countryName);
-    
     router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(countryName)}`);
-    
-    setTimeout(() => {
-      isNavigatingRef.current = false;
-    }, 1000);
+  };
+
+  const handleCategorySelect = (categoryId, categoryName) => {
+    handleCategorySelection(categoryName);
+    router.push(`/filter/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
   };
 
   return (
@@ -79,17 +67,4 @@ export default function FilterScreen() {
       )}
     </Box>
   );
-
-  function handleCategorySelect(categoryId, categoryName) {
-    if (isNavigatingRef.current) return;
-    
-    isNavigatingRef.current = true;
-    handleCategorySelection(categoryName);
-    
-    router.push(`/filter/result/category-filter-result?category=${encodeURIComponent(categoryName)}`);
-    
-    setTimeout(() => {
-      isNavigatingRef.current = false;
-    }, 1000);
-  }
 }

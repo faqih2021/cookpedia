@@ -11,7 +11,7 @@ export default function IngredientsResultPage() {
     : (ingredient || 'Chicken');
 
   const handleGoBack = () => {
-    router.back();
+    router.replace('/(tabs)/filter');
   };
 
   return (

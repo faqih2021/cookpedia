@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Box, Text } from '@gluestack-ui/themed';
+import { Pressable, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { Box, Text, VStack, HStack } from '@gluestack-ui/themed';
 import { ArrowLeft } from 'lucide-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 export default function CategoryDetail() {
   const params = useLocalSearchParams();
@@ -54,8 +55,49 @@ export default function CategoryDetail() {
 
   if (loading) {
     return (
-      <Box flex={1} bg="$white" justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" color="#00A86B" />
+      <Box flex={1} bg="$white">
+        <SafeAreaView style={{ flex: 1 }}>
+          <Box px="$5" flex={1}>
+            {/* Header Skeleton */}
+            <HStack alignItems="center" mb="$4" pt="$2">
+              <Skeleton variant="circular" className="h-10 w-10 mr-3" startColor="bg-gray-200" />
+              <Box flex={1}>
+                <Skeleton variant="rounded" className="h-6 w-32" startColor="bg-gray-200" />
+              </Box>
+              <Skeleton variant="rounded" className="h-4 w-20" startColor="bg-gray-200" />
+            </HStack>
+            
+            {/* Category Image Skeleton */}
+            <Box borderRadius={14} overflow="hidden" mb="$4">
+              <Skeleton variant="sharp" className="h-48 w-full" startColor="bg-gray-200" />
+            </Box>
+            
+            {/* Section Title Skeleton */}
+            <Skeleton variant="rounded" className="h-5 w-36 mb-3" startColor="bg-gray-200" />
+            
+            {/* Recipe List Skeleton */}
+            <VStack space="md">
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <Box 
+                  key={item}
+                  flexDirection="row" 
+                  alignItems="center"
+                  bg="$white"
+                  borderRadius={12}
+                  borderWidth={1}
+                  borderColor="$coolGray100"
+                  overflow="hidden"
+                >
+                  <Skeleton variant="sharp" className="h-20 w-24" startColor="bg-gray-200" />
+                  <VStack flex={1} px="$3" py="$2" space="sm">
+                    <Skeleton variant="rounded" className="h-4 w-full" startColor="bg-gray-200" />
+                    <Skeleton variant="rounded" className="h-3 w-20" startColor="bg-gray-200" />
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
+          </Box>
+        </SafeAreaView>
       </Box>
     );
   }
