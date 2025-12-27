@@ -6,11 +6,10 @@ import {
   ScrollView,
   Box
 } from '@gluestack-ui/themed';
-import { Image, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Image } from 'react-native';
+import { Skeleton } from '../ui/skeleton';
 
 export default function CategoryFilter({ onCategorySelect }) {
-  const router = useRouter();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,16 +36,10 @@ export default function CategoryFilter({ onCategorySelect }) {
 
   const handleCategoryPress = (category) => {
     if (onCategorySelect) onCategorySelect(category.id, category.name);
-    router.push(`/filter/result/category-filter-result?category=${encodeURIComponent(category.name)}`);
   };
 
-  if (loading) {
-    return (
-      <VStack flex={1} bg="#00A86B" justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" color="white" />
-      </VStack>
-    );
-  }
+  // Skeleton placeholder data untuk loading state
+  const skeletonItems = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
     <VStack flex={1} bg="#00A86B">
@@ -66,41 +59,71 @@ export default function CategoryFilter({ onCategorySelect }) {
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
       >
         <VStack space="md">
-          {categories.map((category) => (
-            <Pressable
-              key={category.id}
-              bg="white"
-              borderRadius="$2xl"
-              p="$4"
-              onPress={() => handleCategoryPress(category)}
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-between"
-              shadowColor="#000000"
-              shadowOffset={{ width: 0, height: 2 }}
-              shadowOpacity={0.1}
-              shadowRadius={4}
-              elevation={3}
-            >
-              <Text 
-                fontSize="$xl" 
-                fontWeight="$bold" 
-                color="$coolGray800"
-                flex={1}
+          {loading ? (
+            // Skeleton items saat loading
+            skeletonItems.map((item) => (
+              <Box
+                key={item}
+                bg="white"
+                borderRadius="$2xl"
+                p="$4"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+                shadowColor="#000000"
+                shadowOffset={{ width: 0, height: 4 }}
+                shadowOpacity={0.15}
+                shadowRadius={8}
+                elevation={5}
               >
-                {category.name}
-              </Text>
-              <Image 
-                source={category.image}
-                style={{ 
-                  width: 60, 
-                  height: 60,
-                  borderRadius: 30
-                }}
-                resizeMode="cover"
-              />
-            </Pressable>
-          ))}
+                <Skeleton 
+                  variant="rounded" 
+                  style={{ width: 112, height: 24, borderRadius: 8 }} 
+                />
+                <Skeleton 
+                  variant="circular" 
+                  style={{ width: 60, height: 60, borderRadius: 30 }} 
+                />
+              </Box>
+            ))
+          ) : (
+            // Data kategori sebenarnya
+            categories.map((category) => (
+              <Pressable
+                key={category.id}
+                bg="white"
+                borderRadius="$2xl"
+                p="$4"
+                onPress={() => handleCategoryPress(category)}
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+                shadowColor="#000000"
+                shadowOffset={{ width: 0, height: 2 }}
+                shadowOpacity={0.1}
+                shadowRadius={4}
+                elevation={3}
+              >
+                <Text 
+                  fontSize="$xl" 
+                  fontWeight="$bold" 
+                  color="$coolGray800"
+                  flex={1}
+                >
+                  {category.name}
+                </Text>
+                <Image 
+                  source={category.image}
+                  style={{ 
+                    width: 60, 
+                    height: 60,
+                    borderRadius: 30
+                  }}
+                  resizeMode="cover"
+                />
+              </Pressable>
+            ))
+          )}
         </VStack>
       </ScrollView>
     </VStack>

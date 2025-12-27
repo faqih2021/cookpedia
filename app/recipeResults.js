@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Box, Text } from "@gluestack-ui/themed";
+import { ScrollView, TouchableOpacity } from "react-native";
+import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import RecipeCard from "../components/recipeResultCard";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function RecipeResultsScreen() {
   const router = useRouter();
@@ -88,10 +89,30 @@ export default function RecipeResultsScreen() {
           </Box>
 
           {loading ? (
-            <Box justifyContent="center" alignItems="center" mt="$8">
-              <ActivityIndicator size="large" color="#00A86B" />
-              <Text mt="$3" color="$coolGray600">Searching...</Text>
-            </Box>
+            <VStack space="md" mt="$4">
+              {[1, 2, 3].map((item) => (
+                <Box
+                  key={item}
+                  bg="white"
+                  borderRadius="$xl"
+                  overflow="hidden"
+                  shadowColor="$coolGray300"
+                  shadowOffset={{ width: 0, height: 2 }}
+                  shadowOpacity={0.1}
+                  shadowRadius={8}
+                  elevation={3}
+                >
+                  {/* Skeleton Image */}
+                  <Skeleton variant="sharp" className="h-44 w-full" startColor="bg-gray-200" />
+                  
+                  {/* Skeleton Content */}
+                  <VStack p="$4" space="sm">
+                    <Skeleton variant="rounded" className="h-5 w-48" startColor="bg-gray-200" />
+                    <Skeleton variant="rounded" className="h-3 w-24" startColor="bg-gray-200" />
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
           ) : searchResults.length > 0 ? (
             searchResults.map((recipe) => (
               <RecipeCard 

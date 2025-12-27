@@ -6,13 +6,12 @@ import {
   Box,
   Pressable
 } from '@gluestack-ui/themed';
-import { Image, ActivityIndicator, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Image, ScrollView } from 'react-native';
+import { Skeleton } from '../ui/skeleton';
 
 export default function CountryFilter({
   onCountrySelect
 }) {
-  const router = useRouter();
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,8 +53,108 @@ export default function CountryFilter({
 
   if (loading) {
     return (
-      <VStack flex={1} bg="#00A86B" justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" color="white" />
+      <VStack flex={1} bg="#00A86B">
+        {/* Header - Teks Statis */}
+        <VStack p="$6" pt="$2" pb="$2">
+          <Text fontSize="$3xl" fontWeight="$bold" color="white">
+            Explore by Country
+          </Text>
+          <Text fontSize="$md" color="rgba(255,255,255,0.8)">
+            Discover recipes from around the world
+          </Text>
+        </VStack>
+        
+        {/* Popular Country Skeleton */}
+        <VStack p="$6" pt="$4">
+          <Text 
+            fontSize="$lg" 
+            fontWeight="$bold" 
+            color="$coolGray800" 
+            bg="white" 
+            px="$4" 
+            py="$2" 
+            borderRadius="$3xl"
+            alignSelf="flex-start"
+            mb="$3"
+          >
+            Popular Country
+          </Text>
+          <Box 
+            bg="$white" 
+            borderRadius="$2xl" 
+            p="$4"
+            shadowColor="#000000"
+            shadowOffset={{ width: 0, height: 4 }}
+            shadowOpacity={0.15}
+            shadowRadius={8}
+            elevation={5}
+          >
+            <HStack alignItems="center" space="md">
+              <Skeleton 
+                variant="rounded" 
+                style={{ width: 80, height: 60, borderRadius: 8 }} 
+              />
+              <Skeleton 
+                variant="rounded" 
+                style={{ width: 112, height: 28, borderRadius: 8 }} 
+              />
+            </HStack>
+          </Box>
+        </VStack>
+        
+        {/* Countries Grid Skeleton */}
+        <VStack
+          flex={1}
+          bg="white" 
+          borderTopLeftRadius={50} 
+          borderTopRightRadius={50}
+          mt="$0"
+        >
+          <VStack pt="$8" px="$6" pb="$3" bg="white" borderTopLeftRadius={50} borderTopRightRadius={50}>
+            <Text fontSize="$md" fontWeight="$bold" color="$coolGray800">
+              All Countries
+            </Text>
+          </VStack>
+          
+          <ScrollView
+            style={{ flex: 1 }}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 24 }}
+          >
+            <VStack px="$6" space="md">
+              {[1, 2, 3, 4].map((rowIndex) => (
+                <HStack key={rowIndex} space="md" justifyContent="space-between">
+                  {[1, 2, 3].map((item) => (
+                    <Box 
+                      key={item} 
+                      flex={1} 
+                      alignItems="center" 
+                      justifyContent="center"
+                      py="$4" 
+                      px="$3" 
+                      bg="$white" 
+                      borderRadius="$2xl"
+                      shadowColor="#000000"
+                      shadowOffset={{ width: 0, height: 4 }}
+                      shadowOpacity={0.15}
+                      shadowRadius={8}
+                      elevation={5}
+                    >
+                      <Skeleton 
+                        variant="rounded" 
+                        style={{ width: 50, height: 35, borderRadius: 8 }} 
+                      />
+                      <Skeleton 
+                        variant="rounded" 
+                        style={{ width: 64, height: 14, borderRadius: 6, marginTop: 8 }} 
+                      />
+                    </Box>
+                  ))}
+                </HStack>
+              ))}
+            </VStack>
+          </ScrollView>
+        </VStack>
       </VStack>
     );
   }
@@ -93,7 +192,6 @@ export default function CountryFilter({
             p="$4"
             onPress={() => {
               if (onCountrySelect) onCountrySelect(countries[0]?.id, countries[0]?.name);
-              router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(countries[0]?.name)}`);
             }}
             shadowColor="#000000"
             shadowOffset={{ width: 0, height: 4 }}
@@ -154,7 +252,6 @@ export default function CountryFilter({
                     px="$3"
                     onPress={() => {
                       if (onCountrySelect) onCountrySelect(country.id, country.name);
-                      router.push(`/filter/result/countries-filter-result?country=${encodeURIComponent(country.name)}`);
                     }}
                     shadowColor="#000000"
                     shadowOffset={{ width: 0, height: 4 }}

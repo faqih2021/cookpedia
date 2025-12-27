@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
-import { Box, Text } from '@gluestack-ui/themed';
+import { FlatList, Image, TouchableOpacity, Pressable } from 'react-native';
+import { Box, Text, VStack, HStack } from '@gluestack-ui/themed';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
+import { Skeleton } from '../../components/ui/skeleton';
 
 export default function AllRecommendations() {
   const router = useRouter();
@@ -48,8 +49,26 @@ export default function AllRecommendations() {
 
   if (loading) {
     return (
-      <Box flex={1} bg="$white" justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" color="#00A86B" />
+      <Box flex={1} bg="$white" px="$4" py="$12">
+        <HStack alignItems="center" justifyContent="space-between" mb="$4">
+          <HStack alignItems="center">
+            <Skeleton variant="circular" className="h-10 w-10 mr-2" startColor="bg-gray-200" />
+            <Skeleton variant="rounded" className="h-6 w-40" startColor="bg-gray-200" />
+          </HStack>
+          <Skeleton variant="rounded" className="h-4 w-16" startColor="bg-gray-200" />
+        </HStack>
+        
+        <VStack space="md">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+            <HStack key={item} space="md" alignItems="center">
+              <Skeleton variant="rounded" className="h-[72px] w-24" startColor="bg-gray-200" style={{ borderRadius: 8 }} />
+              <VStack flex={1} space="sm">
+                <Skeleton variant="rounded" className="h-5 w-full" startColor="bg-gray-200" />
+                <Skeleton variant="rounded" className="h-3 w-20" startColor="bg-gray-200" />
+              </VStack>
+            </HStack>
+          ))}
+        </VStack>
       </Box>
     );
   }

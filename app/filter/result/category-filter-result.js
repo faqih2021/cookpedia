@@ -9,7 +9,7 @@ export default function CategoryResultPage() {
   const selectedCategory = category || 'Unknown';
 
   const handleGoBack = () => {
-    router.back();
+    router.replace('/(tabs)/filter');
   };
 
   return (

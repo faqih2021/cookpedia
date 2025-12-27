@@ -7,14 +7,13 @@ import {
   Pressable,
   Box
 } from '@gluestack-ui/themed';
-import { Image, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Image } from 'react-native';
+import { Skeleton } from '../ui/skeleton';
 
 export default function IngredientFilter({
   selectedIngredient,
   onIngredientSelect
 }) {
-  const router = useRouter();
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +41,6 @@ export default function IngredientFilter({
     if (onIngredientSelect) {
       onIngredientSelect(ingredient.id, ingredient.name);
     }
-    router.push(`/filter/result/ingredients-filter-result?ingredient=${encodeURIComponent(ingredient.name)}`);
   };
 
   return (
@@ -72,9 +70,45 @@ export default function IngredientFilter({
         </VStack>
 
         {loading ? (
-          <Box flex={1} justifyContent="center" alignItems="center">
-            <ActivityIndicator size="large" color="#00A86B" />
-          </Box>
+          <ScrollView
+            flex={1}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 24 }}
+          >
+            <VStack px="$6" space="md">
+              {[1, 2, 3, 4].map((rowIndex) => (
+                <HStack key={rowIndex} space="md" justifyContent="space-between">
+                  {[1, 2, 3].map((item) => (
+                    <Box 
+                      key={item} 
+                      flex={1} 
+                      aspectRatio={0.95} 
+                      mx="$1" 
+                      alignItems="center" 
+                      justifyContent="center" 
+                      bg="$white" 
+                      borderRadius="$2xl" 
+                      p="$3"
+                      shadowColor="#000000"
+                      shadowOffset={{ width: 0, height: 4 }}
+                      shadowOpacity={0.15}
+                      shadowRadius={8}
+                      elevation={5}
+                    >
+                      <Skeleton 
+                        variant="rounded" 
+                        style={{ width: 60, height: 60, borderRadius: 12 }} 
+                      />
+                      <Skeleton 
+                        variant="rounded" 
+                        style={{ width: 64, height: 18, borderRadius: 8, marginTop: 12 }} 
+                      />
+                    </Box>
+                  ))}
+                </HStack>
+              ))}
+            </VStack>
+          </ScrollView>
         ) : (
           <ScrollView
             flex={1}

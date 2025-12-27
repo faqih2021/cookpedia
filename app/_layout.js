@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
+import { FavoritesProvider } from '../context/FavoritesContext';
 import { View, ActivityIndicator } from 'react-native';
 
 function RootLayoutNav() {
@@ -45,7 +46,9 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider config={config}>
       <AuthProvider>
-        <RootLayoutNav />
+        <FavoritesProvider>
+          <RootLayoutNav />
+        </FavoritesProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );

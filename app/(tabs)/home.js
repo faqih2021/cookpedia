@@ -1,13 +1,196 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Box, Text, Pressable } from '@gluestack-ui/themed';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Box, Text, Pressable, HStack, VStack } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 import Categories from '../../components/home/categories';
 import Recommendation from '../../components/home/recommendation';
 import RecipeOfTheDay from '../../components/home/recipeOfTheDay';
 import { useAuth } from '../../hooks/useAuth';
+import { Skeleton } from '../../components/ui/skeleton';
+import { ImageOff } from 'lucide-react-native';
+
+// Component untuk menampilkan gambar dengan error handling
+function ImageWithFallback({ source, style, fallbackText = "Image not found" }) {
+  const [error, setError] = useState(false);
+
+  if (error || !source?.uri) {
+    return (
+      <Box 
+        style={[style, { backgroundColor: '#F3F4F6', justifyContent: 'center', alignItems: 'center' }]}
+      >
+        <ImageOff size={24} color="#9CA3AF" />
+        <Text fontSize="$xs" color="$coolGray400" mt="$1" textAlign="center">
+          {fallbackText}
+        </Text>
+      </Box>
+    );
+  }
+
+  return (
+    <Image 
+      source={source}
+      style={style}
+      onError={() => setError(true)}
+    />
+  );
+}
 
 const avatarUri = 'https://i.pravatar.cc/150?img=12';
+
+// Skeleton untuk Home Screen
+function HomeSkeleton() {
+  return (
+    <Box flex={1} bg="white" px="$5" pt="$12">
+      {/* Header Skeleton */}
+      <HStack justifyContent="space-between" alignItems="center" mb="$6">
+        <VStack flex={1} gap="$2">
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 100, height: 16, borderRadius: 8 }} 
+          />
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 220, height: 28, borderRadius: 8 }} 
+          />
+        </VStack>
+        <Skeleton 
+          variant="circular" 
+          style={{ width: 48, height: 48, borderRadius: 24 }} 
+        />
+      </HStack>
+
+      {/* Categories Skeleton */}
+      <Box mb="$5">
+        <HStack justifyContent="space-between" alignItems="center" mb="$3">
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 90, height: 22, borderRadius: 6 }} 
+          />
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 50, height: 16, borderRadius: 6 }} 
+          />
+        </HStack>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HStack space="md">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <Box 
+                key={item} 
+                width={92} 
+                height={92} 
+                borderRadius={14} 
+                justifyContent="center" 
+                alignItems="center" 
+                bg="$white"
+                borderWidth={1}
+                borderColor="$coolGray100"
+              >
+                <Skeleton 
+                  variant="rounded" 
+                  style={{ width: 36, height: 36, borderRadius: 8, marginBottom: 8 }} 
+                />
+                <Skeleton 
+                  variant="rounded" 
+                  style={{ width: 56, height: 12, borderRadius: 4 }} 
+                />
+              </Box>
+            ))}
+          </HStack>
+        </ScrollView>
+      </Box>
+
+      {/* Recommendation Skeleton */}
+      <Box mb="$5">
+        <HStack justifyContent="space-between" alignItems="center" mb="$3">
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 130, height: 22, borderRadius: 6 }} 
+          />
+          <Skeleton 
+            variant="rounded" 
+            style={{ width: 50, height: 16, borderRadius: 6 }} 
+          />
+        </HStack>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HStack space="md">
+            {[1, 2, 3].map((item) => (
+              <Box 
+                key={item} 
+                width={200} 
+                borderRadius={14} 
+                overflow="hidden" 
+                bg="$white"
+                borderWidth={1}
+                borderColor="$coolGray100"
+              >
+                <Box position="relative">
+                  <Skeleton 
+                    variant="sharp" 
+                    style={{ width: '100%', height: 140 }} 
+                  />
+                  <Box position="absolute" top={8} right={8}>
+                    <Skeleton 
+                      variant="circular" 
+                      style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#F3F4F6' }} 
+                    />
+                  </Box>
+                </Box>
+                <VStack p="$3" space="sm">
+                  <Skeleton 
+                    variant="rounded" 
+                    style={{ width: 140, height: 16, borderRadius: 6 }} 
+                  />
+                  <Skeleton 
+                    variant="rounded" 
+                    style={{ width: 80, height: 12, borderRadius: 4 }} 
+                  />
+                </VStack>
+              </Box>
+            ))}
+          </HStack>
+        </ScrollView>
+      </Box>
+
+      {/* Recipe of the Day Skeleton */}
+      <Box mb="$4">
+        <Skeleton 
+          variant="rounded" 
+          style={{ width: 140, height: 22, borderRadius: 6, marginBottom: 12 }} 
+        />
+        <Box 
+          borderRadius={14} 
+          overflow="hidden" 
+          bg="$white"
+          borderWidth={1}
+          borderColor="$coolGray100"
+        >
+          <Box position="relative">
+            <Skeleton 
+              variant="sharp" 
+              style={{ width: '100%', height: 180 }} 
+            />
+            <Box position="absolute" top={12} right={12}>
+              <Skeleton 
+                variant="circular" 
+                style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#F3F4F6' }} 
+              />
+            </Box>
+          </Box>
+          <VStack p="$3" space="sm">
+            <Skeleton 
+              variant="rounded" 
+              style={{ width: 180, height: 18, borderRadius: 6 }} 
+            />
+            <Skeleton 
+              variant="rounded" 
+              style={{ width: 100, height: 14, borderRadius: 4 }} 
+            />
+          </VStack>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
 export default function HomeScreen({
   heading = 'What would you like to cook today?',
@@ -63,9 +246,7 @@ export default function HomeScreen({
   return (
     <Box flex={1} bg="white">
       {loading ? (
-        <Box flex={1} justifyContent="center" alignItems="center">
-          <ActivityIndicator size="large" color="#00A86B" />
-        </Box>
+        <HomeSkeleton />
       ) : (
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 48, paddingBottom: 32 }}>
         <Box flexDirection="row" justifyContent="space-between" alignItems="center" mb="$4">
@@ -78,9 +259,10 @@ export default function HomeScreen({
             <Pressable
               onPress={() => router.push('/profile')}
             >
-              <Image
+              <ImageWithFallback
                 source={{ uri: user?.user_metadata?.avatar_url || avatarUri }}
                 style={{ width: 48, height: 48, borderRadius: 24 }}
+                fallbackText=""
               />
             </Pressable>
           </Box>

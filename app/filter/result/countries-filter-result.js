@@ -9,7 +9,7 @@ export default function CountriesResultPage() {
   const selectedCountry = country || 'Unknown';
 
   const handleGoBack = () => {
-    router.back();
+    router.replace('/(tabs)/filter');
   };
 
   return (

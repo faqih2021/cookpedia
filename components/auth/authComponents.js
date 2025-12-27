@@ -204,25 +204,19 @@ export function AuthHeader({ title, subtitle }) {
 }
 
 // Logo Component
+import { Image } from 'react-native';
 export function AuthLogo() {
   return (
     <Box mb="$8" style={{ alignItems: 'center' }}>
-      <Box
-        width={80}
-        height={80}
-        borderRadius={20}
-        bg={COLORS.primary}
-        justifyContent="center"
-        alignItems="center"
-        shadowColor={COLORS.primary}
-        shadowOffset={{ width: 0, height: 4 }}
-        shadowOpacity={0.3}
-        shadowRadius={8}
-        elevation={6}
-      >
-        <Text fontSize={36}>🍳</Text>
-      </Box>
-      <Text fontSize="$2xl" fontWeight="$bold" color={COLORS.primary} mt="$3">
+      <Image
+        source={require('../../assets/logoCookpedia.png')}
+        style={{ 
+          width: 340, 
+          height: 340, 
+          resizeMode: 'contain',
+        }}
+      />
+      <Text fontSize="$3xl" fontWeight="$bold" color={COLORS.primary} style={{ marginTop: -90 }}>
         Cookpedia
       </Text>
     </Box>

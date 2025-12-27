@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Box, Text } from "@gluestack-ui/themed";
+import { ScrollView, TouchableOpacity } from "react-native";
+import { Box, Text, VStack, HStack } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import CategoryCard from "../components/categoryResultCard";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function CategoryResultsScreen() {
   const router = useRouter();
@@ -88,10 +89,33 @@ export default function CategoryResultsScreen() {
           </Box>
 
           {loading ? (
-            <Box justifyContent="center" alignItems="center" mt="$8">
-              <ActivityIndicator size="large" color="#00A86B" />
-              <Text mt="$3" color="$coolGray600">Searching...</Text>
-            </Box>
+            <VStack space="md" mt="$4">
+              {[1, 2, 3, 4].map((item) => (
+                <Box
+                  key={item}
+                  bg="white"
+                  borderRadius="$xl"
+                  overflow="hidden"
+                  flexDirection="row"
+                  alignItems="center"
+                  shadowColor="$coolGray300"
+                  shadowOffset={{ width: 0, height: 2 }}
+                  shadowOpacity={0.1}
+                  shadowRadius={4}
+                  elevation={2}
+                >
+                  {/* Skeleton Image */}
+                  <Skeleton variant="sharp" className="h-20 w-20" startColor="bg-gray-200" />
+                  
+                  {/* Skeleton Content */}
+                  <VStack flex={1} p="$3" space="sm">
+                    <Skeleton variant="rounded" className="h-5 w-28" startColor="bg-gray-200" />
+                    <Skeleton variant="rounded" className="h-3 w-full" startColor="bg-gray-200" />
+                    <Skeleton variant="rounded" className="h-3 w-3/4" startColor="bg-gray-200" />
+                  </VStack>
+                </Box>
+              ))}
+            </VStack>
           ) : searchResults.length > 0 ? (
             searchResults.map((category) => (
               <CategoryCard 

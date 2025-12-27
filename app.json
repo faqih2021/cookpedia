@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "cookpedia",
+    "name": "Cookpedia",
     "slug": "cookpedia",
     "scheme": "cookpedia",
     "version": "1.0.0",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/logoCookpedia.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
       "scheme": "cookpedia"
