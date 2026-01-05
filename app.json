@@ -19,14 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logoCookpedia.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.yogamandala.cookpedia"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logoCookpedia.png"
     },
     "plugins": [
       "expo-router"
@@ -37,6 +37,6 @@
         "projectId": "840f55b8-01b6-4c83-aa8f-cdccec5e9a4b"
       }
     },
-    "owner": "yogamandala"
+    "owner": "yogamandala and friends"
   }
 }

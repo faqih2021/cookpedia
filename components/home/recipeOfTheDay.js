@@ -7,12 +7,8 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { Skeleton } from '../ui/skeleton';
 
 // Component untuk menampilkan gambar dengan error handling
-function RecipeImage({ source, style, fallbackImage }) {
+function RecipeImage({ source, style }) {
   const [error, setError] = useState(false);
-
-  if (error && fallbackImage) {
-    return <Image source={fallbackImage} style={style} />;
-  }
 
   if (error || !source?.uri) {
     return (
@@ -130,7 +126,6 @@ export default function RecipeOfTheDay() {
             <RecipeImage 
               source={meal?.strMealThumb ? { uri: meal.strMealThumb } : null} 
               style={{ width: '100%', height: 180, resizeMode: 'cover' }}
-              fallbackImage={require('../../assets/ayam-goreng.jpeg')}
             />
             {/* Favorite Button */}
             <Pressable
