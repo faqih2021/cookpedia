@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import { ArrowLeft, Camera, User, Mail } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '../lib/supabase';
+import { supabase, uploadProfilePhoto, MAX_FILE_SIZE } from '../lib/supabase';
 import { COLORS } from '../components/auth/authComponents';
 
 const avatarUri = 'https://i.pravatar.cc/150?img=12';
@@ -80,40 +80,32 @@ export default function EditProfileScreen() {
   const uploadImage = async (uri) => {
     setUploadingImage(true);
     try {
-      const ext = uri.split('.').pop()?.toLowerCase() || 'jpg';
-      const fileName = `avatar-${user.id}-${Date.now()}.${ext}`;
-      
+      // Check file size before uploading
       const response = await fetch(uri);
       const blob = await response.blob();
-      const arrayBuffer = await new Response(blob).arrayBuffer();
       
-      const { data, error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, arrayBuffer, {
-          contentType: `image/${ext}`,
-          upsert: true,
-        });
-
-      if (uploadError) {
-        console.log('Upload error:', uploadError);
-        setAvatarUrl(uri);
+      if (blob.size > MAX_FILE_SIZE) {
         Alert.alert(
-          'Note', 
-          'Photo selected! It will be saved when you click Save Changes.'
+          'File Too Large', 
+          `File size exceeds 2MB limit. Current size: ${(blob.size / (1024 * 1024)).toFixed(2)}MB. Please choose a smaller image.`
         );
         return;
       }
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
+      // Upload to Supabase Storage (photo-profile bucket)
+      const { url, error } = await uploadProfilePhoto(uri, user.id);
 
-      setAvatarUrl(publicUrl);
-      Alert.alert('Success', 'Photo updated! Click Save Changes to save your profile.');
+      if (error) {
+        console.log('Upload error:', error);
+        Alert.alert('Upload Failed', error);
+        return;
+      }
+
+      setAvatarUrl(url);
+      Alert.alert('Success', 'Photo uploaded! Click Save Changes to save your profile.');
     } catch (error) {
       console.error('Upload error:', error);
-      setAvatarUrl(uri);
-      Alert.alert('Photo Selected', 'Photo will be saved locally. Click Save Changes to continue.');
+      Alert.alert('Upload Error', error.message || 'Failed to upload photo. Please try again.');
     } finally {
       setUploadingImage(false);
     }
