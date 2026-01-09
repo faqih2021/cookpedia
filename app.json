@@ -9,10 +9,9 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logoCookpedia.png",
+      "image": "./assets/SplashCookpedia.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
-      "scheme": "cookpedia"
+      "backgroundColor": "#CFE9A0"
     },
     "ios": {
       "supportsTablet": true
@@ -23,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.yogamandala.cookpedia"
+      "package": "com.rafisyeghani.cookpedia"
     },
     "web": {
       "favicon": "./assets/logoCookpedia.png"
@@ -34,9 +33,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "840f55b8-01b6-4c83-aa8f-cdccec5e9a4b"
+        "projectId": "6f293eb3-4aaa-419b-b35c-8a9be5d51dd5"
       }
     },
-    "owner": "yogamandala and friends"
+    "owner": "rafisyeghani"
   }
 }
